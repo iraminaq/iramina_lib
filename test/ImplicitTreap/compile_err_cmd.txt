@@ -1,0 +1,417 @@
+test3.cpp: In function 'void test_default_construct()':
+test3.cpp:8:19: error: wrong number of template arguments (0, should be 11)
+    8 |     ImplicitTreap<> tr;
+      |                   ^
+In file included from test3.cpp:5:
+../../include/iramina/ImplicitTreap/ImplicitTreap.hpp:14:7: note: provided for 'template<class T, class S, class F, S (* op)(const S&, const S&), S (* e)(), S (* lift)(const T&), T (* mapping_point)(const F&, const T&), S (* mapping)(const F&, const S&, int), F (* composition)(const F&, const F&), F (* id)(), S (* reverse_prod)(const S&)> class ImplicitTreap'
+   14 | class ImplicitTreap {
+      |       ^~~~~~~~~~~~~
+In file included from C:/Program Files/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/cassert:46,
+                 from C:/Program Files/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/x86_64-w64-mingw32/bits/stdc++.h:108,
+                 from ../../include/iramina/ImplicitTreap/ImplicitTreap.hpp:2:
+test3.cpp:9:15: error: request for member 'empty' in 'tr', which is of non-class type 'int'
+    9 |     assert(tr.empty());
+      |               ^~~~~
+test3.cpp:10:15: error: request for member 'size' in 'tr', which is of non-class type 'int'
+   10 |     assert(tr.size() == 0);
+      |               ^~~~
+test3.cpp:11:15: error: request for member 'all_prod' in 'tr', which is of non-class type 'int'
+   11 |     assert(tr.all_prod() == 0LL);
+      |               ^~~~~~~~
+test3.cpp: In function 'void test_default_vector_construct()':
+test3.cpp:16:19: error: wrong number of template arguments (0, should be 11)
+   16 |     ImplicitTreap<> tr(a);
+      |                   ^
+../../include/iramina/ImplicitTreap/ImplicitTreap.hpp:14:7: note: provided for 'template<class T, class S, class F, S (* op)(const S&, const S&), S (* e)(), S (* lift)(const T&), T (* mapping_point)(const F&, const T&), S (* mapping)(const F&, const S&, int), F (* composition)(const F&, const F&), F (* id)(), S (* reverse_prod)(const S&)> class ImplicitTreap'
+   14 | class ImplicitTreap {
+      |       ^~~~~~~~~~~~~
+test3.cpp:16:24: error: cannot convert 'std::vector<long long int>' to 'int' in initialization
+   16 |     ImplicitTreap<> tr(a);
+      |                        ^
+      |                        |
+      |                        std::vector<long long int>
+test3.cpp:18:16: error: request for member 'empty' in 'tr', which is of non-class type 'int'
+   18 |     assert(!tr.empty());
+      |                ^~~~~
+test3.cpp:19:15: error: request for member 'size' in 'tr', which is of non-class type 'int'
+   19 |     assert(tr.size() == 5);
+      |               ^~~~
+test3.cpp:20:15: error: request for member 'all_prod' in 'tr', which is of non-class type 'int'
+   20 |     assert(tr.all_prod() == 15LL);
+      |               ^~~~~~~~
+test3.cpp:21:15: error: request for member 'dump' in 'tr', which is of non-class type 'int'
+   21 |     assert(tr.dump() == a);
+      |               ^~~~
+test3.cpp: In function 'void test_default_insert_get_set()':
+test3.cpp:25:19: error: wrong number of template arguments (0, should be 11)
+   25 |     ImplicitTreap<> tr;
+      |                   ^
+../../include/iramina/ImplicitTreap/ImplicitTreap.hpp:14:7: note: provided for 'template<class T, class S, class F, S (* op)(const S&, const S&), S (* e)(), S (* lift)(const T&), T (* mapping_point)(const F&, const T&), S (* mapping)(const F&, const S&, int), F (* composition)(const F&, const F&), F (* id)(), S (* reverse_prod)(const S&)> class ImplicitTreap'
+   14 | class ImplicitTreap {
+      |       ^~~~~~~~~~~~~
+test3.cpp:27:8: error: request for member 'insert' in 'tr', which is of non-class type 'int'
+   27 |     tr.insert(0, 10);
+      |        ^~~~~~
+test3.cpp:28:8: error: request for member 'insert' in 'tr', which is of non-class type 'int'
+   28 |     tr.insert(1, 20);
+      |        ^~~~~~
+test3.cpp:29:8: error: request for member 'insert' in 'tr', which is of non-class type 'int'
+   29 |     tr.insert(1, 15);
+      |        ^~~~~~
+test3.cpp:31:15: error: request for member 'size' in 'tr', which is of non-class type 'int'
+   31 |     assert(tr.size() == 3);
+      |               ^~~~
+test3.cpp:32:15: error: request for member 'get' in 'tr', which is of non-class type 'int'
+   32 |     assert(tr.get(0) == 10LL);
+      |               ^~~
+test3.cpp:33:15: error: request for member 'get' in 'tr', which is of non-class type 'int'
+   33 |     assert(tr.get(1) == 15LL);
+      |               ^~~
+test3.cpp:34:15: error: request for member 'get' in 'tr', which is of non-class type 'int'
+   34 |     assert(tr.get(2) == 20LL);
+      |               ^~~
+test3.cpp:35:16: error: request for member 'dump' in 'tr', which is of non-class type 'int'
+   35 |     assert((tr.dump() == vector<long long>{10, 15, 20}));
+      |                ^~~~
+test3.cpp:36:15: error: request for member 'all_prod' in 'tr', which is of non-class type 'int'
+   36 |     assert(tr.all_prod() == 45LL);
+      |               ^~~~~~~~
+test3.cpp:38:8: error: request for member 'set' in 'tr', which is of non-class type 'int'
+   38 |     tr.set(1, 100);
+      |        ^~~
+test3.cpp:39:15: error: request for member 'get' in 'tr', which is of non-class type 'int'
+   39 |     assert(tr.get(1) == 100LL);
+      |               ^~~
+test3.cpp:40:16: error: request for member 'dump' in 'tr', which is of non-class type 'int'
+   40 |     assert((tr.dump() == vector<long long>{10, 100, 20}));
+      |                ^~~~
+test3.cpp:41:15: error: request for member 'all_prod' in 'tr', which is of non-class type 'int'
+   41 |     assert(tr.all_prod() == 130LL);
+      |               ^~~~~~~~
+test3.cpp: In function 'void test_default_erase()':
+test3.cpp:46:19: error: wrong number of template arguments (0, should be 11)
+   46 |     ImplicitTreap<> tr(a);
+      |                   ^
+../../include/iramina/ImplicitTreap/ImplicitTreap.hpp:14:7: note: provided for 'template<class T, class S, class F, S (* op)(const S&, const S&), S (* e)(), S (* lift)(const T&), T (* mapping_point)(const F&, const T&), S (* mapping)(const F&, const S&, int), F (* composition)(const F&, const F&), F (* id)(), S (* reverse_prod)(const S&)> class ImplicitTreap'
+   14 | class ImplicitTreap {
+      |       ^~~~~~~~~~~~~
+test3.cpp:46:24: error: cannot convert 'std::vector<long long int>' to 'int' in initialization
+   46 |     ImplicitTreap<> tr(a);
+      |                        ^
+      |                        |
+      |                        std::vector<long long int>
+test3.cpp:48:8: error: request for member 'erase' in 'tr', which is of non-class type 'int'
+   48 |     tr.erase(2);
+      |        ^~~~~
+test3.cpp:49:16: error: request for member 'dump' in 'tr', which is of non-class type 'int'
+   49 |     assert((tr.dump() == vector<long long>{1, 2, 4, 5}));
+      |                ^~~~
+test3.cpp:50:15: error: request for member 'size' in 'tr', which is of non-class type 'int'
+   50 |     assert(tr.size() == 4);
+      |               ^~~~
+test3.cpp:51:15: error: request for member 'all_prod' in 'tr', which is of non-class type 'int'
+   51 |     assert(tr.all_prod() == 12LL);
+      |               ^~~~~~~~
+test3.cpp:53:8: error: request for member 'erase' in 'tr', which is of non-class type 'int'
+   53 |     tr.erase(0);
+      |        ^~~~~
+test3.cpp:54:16: error: request for member 'dump' in 'tr', which is of non-class type 'int'
+   54 |     assert((tr.dump() == vector<long long>{2, 4, 5}));
+      |                ^~~~
+test3.cpp:55:15: error: request for member 'size' in 'tr', which is of non-class type 'int'
+   55 |     assert(tr.size() == 3);
+      |               ^~~~
+test3.cpp:56:15: error: request for member 'all_prod' in 'tr', which is of non-class type 'int'
+   56 |     assert(tr.all_prod() == 11LL);
+      |               ^~~~~~~~
+test3.cpp:58:8: error: request for member 'erase' in 'tr', which is of non-class type 'int'
+   58 |     tr.erase(2);
+      |        ^~~~~
+test3.cpp:59:16: error: request for member 'dump' in 'tr', which is of non-class type 'int'
+   59 |     assert((tr.dump() == vector<long long>{2, 4}));
+      |                ^~~~
+test3.cpp:60:15: error: request for member 'size' in 'tr', which is of non-class type 'int'
+   60 |     assert(tr.size() == 2);
+      |               ^~~~
+test3.cpp:61:15: error: request for member 'all_prod' in 'tr', which is of non-class type 'int'
+   61 |     assert(tr.all_prod() == 6LL);
+      |               ^~~~~~~~
+test3.cpp: In function 'void test_default_prod()':
+test3.cpp:66:19: error: wrong number of template arguments (0, should be 11)
+   66 |     ImplicitTreap<> tr(a);
+      |                   ^
+../../include/iramina/ImplicitTreap/ImplicitTreap.hpp:14:7: note: provided for 'template<class T, class S, class F, S (* op)(const S&, const S&), S (* e)(), S (* lift)(const T&), T (* mapping_point)(const F&, const T&), S (* mapping)(const F&, const S&, int), F (* composition)(const F&, const F&), F (* id)(), S (* reverse_prod)(const S&)> class ImplicitTreap'
+   14 | class ImplicitTreap {
+      |       ^~~~~~~~~~~~~
+test3.cpp:66:24: error: cannot convert 'std::vector<long long int>' to 'int' in initialization
+   66 |     ImplicitTreap<> tr(a);
+      |                        ^
+      |                        |
+      |                        std::vector<long long int>
+test3.cpp:68:15: error: request for member 'prod' in 'tr', which is of non-class type 'int'
+   68 |     assert(tr.prod(0, 0) == 0LL);
+      |               ^~~~
+test3.cpp:69:15: error: request for member 'prod' in 'tr', which is of non-class type 'int'
+   69 |     assert(tr.prod(0, 5) == 15LL);
+      |               ^~~~
+test3.cpp:70:15: error: request for member 'prod' in 'tr', which is of non-class type 'int'
+   70 |     assert(tr.prod(1, 4) == 9LL);
+      |               ^~~~
+test3.cpp:71:15: error: request for member 'prod' in 'tr', which is of non-class type 'int'
+   71 |     assert(tr.prod(2, 3) == 3LL);
+      |               ^~~~
+test3.cpp:72:15: error: request for member 'prod' in 'tr', which is of non-class type 'int'
+   72 |     assert(tr.prod(4, 5) == 5LL);
+      |               ^~~~
+test3.cpp: In function 'void test_default_apply_range_add()':
+test3.cpp:77:19: error: wrong number of template arguments (0, should be 11)
+   77 |     ImplicitTreap<> tr(a);
+      |                   ^
+../../include/iramina/ImplicitTreap/ImplicitTreap.hpp:14:7: note: provided for 'template<class T, class S, class F, S (* op)(const S&, const S&), S (* e)(), S (* lift)(const T&), T (* mapping_point)(const F&, const T&), S (* mapping)(const F&, const S&, int), F (* composition)(const F&, const F&), F (* id)(), S (* reverse_prod)(const S&)> class ImplicitTreap'
+   14 | class ImplicitTreap {
+      |       ^~~~~~~~~~~~~
+test3.cpp:77:24: error: cannot convert 'std::vector<long long int>' to 'int' in initialization
+   77 |     ImplicitTreap<> tr(a);
+      |                        ^
+      |                        |
+      |                        std::vector<long long int>
+test3.cpp:79:8: error: request for member 'apply' in 'tr', which is of non-class type 'int'
+   79 |     tr.apply(1, 4, 10);  // [1,4): +10
+      |        ^~~~~
+test3.cpp:80:16: error: request for member 'dump' in 'tr', which is of non-class type 'int'
+   80 |     assert((tr.dump() == vector<long long>{1, 12, 13, 14, 5}));
+      |                ^~~~
+test3.cpp:81:15: error: request for member 'prod' in 'tr', which is of non-class type 'int'
+   81 |     assert(tr.prod(0, 5) == 45LL);
+      |               ^~~~
+test3.cpp:82:15: error: request for member 'prod' in 'tr', which is of non-class type 'int'
+   82 |     assert(tr.prod(1, 4) == 39LL);
+      |               ^~~~
+test3.cpp:83:15: error: request for member 'get' in 'tr', which is of non-class type 'int'
+   83 |     assert(tr.get(1) == 12LL);
+      |               ^~~
+test3.cpp:84:15: error: request for member 'get' in 'tr', which is of non-class type 'int'
+   84 |     assert(tr.get(3) == 14LL);
+      |               ^~~
+test3.cpp:86:8: error: request for member 'apply' in 'tr', which is of non-class type 'int'
+   86 |     tr.apply(0, 5, -2);
+      |        ^~~~~
+test3.cpp:87:16: error: request for member 'dump' in 'tr', which is of non-class type 'int'
+   87 |     assert((tr.dump() == vector<long long>{-1, 10, 11, 12, 3}));
+      |                ^~~~
+test3.cpp:88:15: error: request for member 'all_prod' in 'tr', which is of non-class type 'int'
+   88 |     assert(tr.all_prod() == 35LL);
+      |               ^~~~~~~~
+test3.cpp: In function 'void test_default_reverse_sum_invariant()':
+test3.cpp:93:19: error: wrong number of template arguments (0, should be 11)
+   93 |     ImplicitTreap<> tr(a);
+      |                   ^
+../../include/iramina/ImplicitTreap/ImplicitTreap.hpp:14:7: note: provided for 'template<class T, class S, class F, S (* op)(const S&, const S&), S (* e)(), S (* lift)(const T&), T (* mapping_point)(const F&, const T&), S (* mapping)(const F&, const S&, int), F (* composition)(const F&, const F&), F (* id)(), S (* reverse_prod)(const S&)> class ImplicitTreap'
+   14 | class ImplicitTreap {
+      |       ^~~~~~~~~~~~~
+test3.cpp:93:24: error: cannot convert 'std::vector<long long int>' to 'int' in initialization
+   93 |     ImplicitTreap<> tr(a);
+      |                        ^
+      |                        |
+      |                        std::vector<long long int>
+test3.cpp:95:27: error: request for member 'all_prod' in 'tr', which is of non-class type 'int'
+   95 |     long long before = tr.all_prod();
+      |                           ^~~~~~~~
+test3.cpp:96:8: error: request for member 'reverse' in 'tr', which is of non-class type 'int'
+   96 |     tr.reverse(1, 5);
+      |        ^~~~~~~
+test3.cpp:97:16: error: request for member 'dump' in 'tr', which is of non-class type 'int'
+   97 |     assert((tr.dump() == vector<long long>{1, 5, 4, 3, 2, 6}));
+      |                ^~~~
+test3.cpp:98:15: error: request for member 'all_prod' in 'tr', which is of non-class type 'int'
+   98 |     assert(tr.all_prod() == before);
+      |               ^~~~~~~~
+test3.cpp:99:15: error: request for member 'prod' in 'tr', which is of non-class type 'int'
+   99 |     assert(tr.prod(1, 5) == 14LL);
+      |               ^~~~
+test3.cpp: In function 'void test_default_split_merge()':
+test3.cpp:104:19: error: wrong number of template arguments (0, should be 11)
+  104 |     ImplicitTreap<> tr(a);
+      |                   ^
+../../include/iramina/ImplicitTreap/ImplicitTreap.hpp:14:7: note: provided for 'template<class T, class S, class F, S (* op)(const S&, const S&), S (* e)(), S (* lift)(const T&), T (* mapping_point)(const F&, const T&), S (* mapping)(const F&, const S&, int), F (* composition)(const F&, const F&), F (* id)(), S (* reverse_prod)(const S&)> class ImplicitTreap'
+   14 | class ImplicitTreap {
+      |       ^~~~~~~~~~~~~
+test3.cpp:104:24: error: cannot convert 'std::vector<long long int>' to 'int' in initialization
+  104 |     ImplicitTreap<> tr(a);
+      |                        ^
+      |                        |
+      |                        std::vector<long long int>
+test3.cpp:106:29: error: request for member 'split' in 'tr', which is of non-class type 'int'
+  106 |     auto [left, right] = tr.split(2);
+      |                             ^~~~~
+test3.cpp: In function 'void test_default_rotate()':
+test3.cpp:120:19: error: wrong number of template arguments (0, should be 11)
+  120 |     ImplicitTreap<> tr(a);
+      |                   ^
+../../include/iramina/ImplicitTreap/ImplicitTreap.hpp:14:7: note: provided for 'template<class T, class S, class F, S (* op)(const S&, const S&), S (* e)(), S (* lift)(const T&), T (* mapping_point)(const F&, const T&), S (* mapping)(const F&, const S&, int), F (* composition)(const F&, const F&), F (* id)(), S (* reverse_prod)(const S&)> class ImplicitTreap'
+   14 | class ImplicitTreap {
+      |       ^~~~~~~~~~~~~
+test3.cpp:120:24: error: cannot convert 'std::vector<long long int>' to 'int' in initialization
+  120 |     ImplicitTreap<> tr(a);
+      |                        ^
+      |                        |
+      |                        std::vector<long long int>
+test3.cpp:124:8: error: request for member 'rotate' in 'tr', which is of non-class type 'int'
+  124 |     tr.rotate(1, 3, 5);
+      |        ^~~~~~
+test3.cpp:125:16: error: request for member 'dump' in 'tr', which is of non-class type 'int'
+  125 |     assert((tr.dump() == vector<long long>{1, 4, 5, 2, 3, 6}));
+      |                ^~~~
+test3.cpp:126:15: error: request for member 'all_prod' in 'tr', which is of non-class type 'int'
+  126 |     assert(tr.all_prod() == 21LL);
+      |               ^~~~~~~~
+test3.cpp: In function 'void test_default_swap_ranges()':
+test3.cpp:131:19: error: wrong number of template arguments (0, should be 11)
+  131 |     ImplicitTreap<> tr(a);
+      |                   ^
+../../include/iramina/ImplicitTreap/ImplicitTreap.hpp:14:7: note: provided for 'template<class T, class S, class F, S (* op)(const S&, const S&), S (* e)(), S (* lift)(const T&), T (* mapping_point)(const F&, const T&), S (* mapping)(const F&, const S&, int), F (* composition)(const F&, const F&), F (* id)(), S (* reverse_prod)(const S&)> class ImplicitTreap'
+   14 | class ImplicitTreap {
+      |       ^~~~~~~~~~~~~
+test3.cpp:131:24: error: cannot convert 'std::vector<long long int>' to 'int' in initialization
+  131 |     ImplicitTreap<> tr(a);
+      |                        ^
+      |                        |
+      |                        std::vector<long long int>
+test3.cpp:134:8: error: request for member 'swap_ranges' in 'tr', which is of non-class type 'int'
+  134 |     tr.swap_ranges(1, 3, 5, 8);
+      |        ^~~~~~~~~~~
+test3.cpp:135:16: error: request for member 'dump' in 'tr', which is of non-class type 'int'
+  135 |     assert((tr.dump() == vector<long long>{1, 6, 7, 8, 4, 5, 2, 3}));
+      |                ^~~~
+test3.cpp:136:15: error: request for member 'all_prod' in 'tr', which is of non-class type 'int'
+  136 |     assert(tr.all_prod() == 36LL);
+      |               ^~~~~~~~
+test3.cpp: In function 'void test_default_max_right()':
+test3.cpp:141:19: error: wrong number of template arguments (0, should be 11)
+  141 |     ImplicitTreap<> tr(a);
+      |                   ^
+../../include/iramina/ImplicitTreap/ImplicitTreap.hpp:14:7: note: provided for 'template<class T, class S, class F, S (* op)(const S&, const S&), S (* e)(), S (* lift)(const T&), T (* mapping_point)(const F&, const T&), S (* mapping)(const F&, const S&, int), F (* composition)(const F&, const F&), F (* id)(), S (* reverse_prod)(const S&)> class ImplicitTreap'
+   14 | class ImplicitTreap {
+      |       ^~~~~~~~~~~~~
+test3.cpp:141:24: error: cannot convert 'std::vector<long long int>' to 'int' in initialization
+  141 |     ImplicitTreap<> tr(a);
+      |                        ^
+      |                        |
+      |                        std::vector<long long int>
+test3.cpp:144:17: error: request for member 'max_right' in 'tr', which is of non-class type 'int'
+  144 |     int r1 = tr.max_right(0, [](long long x) { return x <= 10; });
+      |                 ^~~~~~~~~
+test3.cpp:148:17: error: request for member 'max_right' in 'tr', which is of non-class type 'int'
+  148 |     int r2 = tr.max_right(1, [](long long x) { return x <= 8; });
+      |                 ^~~~~~~~~
+test3.cpp: In function 'void test_default_min_left()':
+test3.cpp:154:19: error: wrong number of template arguments (0, should be 11)
+  154 |     ImplicitTreap<> tr(a);
+      |                   ^
+../../include/iramina/ImplicitTreap/ImplicitTreap.hpp:14:7: note: provided for 'template<class T, class S, class F, S (* op)(const S&, const S&), S (* e)(), S (* lift)(const T&), T (* mapping_point)(const F&, const T&), S (* mapping)(const F&, const S&, int), F (* composition)(const F&, const F&), F (* id)(), S (* reverse_prod)(const S&)> class ImplicitTreap'
+   14 | class ImplicitTreap {
+      |       ^~~~~~~~~~~~~
+test3.cpp:154:24: error: cannot convert 'std::vector<long long int>' to 'int' in initialization
+  154 |     ImplicitTreap<> tr(a);
+      |                        ^
+      |                        |
+      |                        std::vector<long long int>
+test3.cpp:157:17: error: request for member 'min_left' in 'tr', which is of non-class type 'int'
+  157 |     int l1 = tr.min_left(5, [](long long x) { return x <= 18; });
+      |                 ^~~~~~~~
+test3.cpp:161:17: error: request for member 'min_left' in 'tr', which is of non-class type 'int'
+  161 |     int l2 = tr.min_left(4, [](long long x) { return x <= 15; });
+      |                 ^~~~~~~~
+test3.cpp: In function 'void test_default_type_inference()':
+test3.cpp:166:69: error: wrong number of template arguments (0, should be 11)
+  166 |     static_assert(std::is_same_v<decltype(std::declval<ImplicitTreap<>>().get(0)), long long>);
+      |                                                                     ^
+../../include/iramina/ImplicitTreap/ImplicitTreap.hpp:14:7: note: provided for 'template<class T, class S, class F, S (* op)(const S&, const S&), S (* e)(), S (* lift)(const T&), T (* mapping_point)(const F&, const T&), S (* mapping)(const F&, const S&, int), F (* composition)(const F&, const F&), F (* id)(), S (* reverse_prod)(const S&)> class ImplicitTreap'
+   14 | class ImplicitTreap {
+      |       ^~~~~~~~~~~~~
+test3.cpp:166:72: error: no matching function for call to 'declval<<expression error> >()'
+  166 |     static_assert(std::is_same_v<decltype(std::declval<ImplicitTreap<>>().get(0)), long long>);
+      |                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+test3.cpp:166:72: note: there is 1 candidate
+In file included from C:/Program Files/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/cpp_type_traits.h:42,
+                 from C:/Program Files/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_algobase.h:61,
+                 from C:/Program Files/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/algorithm:62,
+                 from C:/Program Files/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/x86_64-w64-mingw32/bits/stdc++.h:53,
+                 from test3.cpp:1:
+C:/Program Files/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/type_traits:2611:10: note: candidate 1: 'template<class _Tp> decltype (__declval<_Tp>(0)) std::declval()'
+ 2611 |     auto declval() noexcept -> decltype(__declval<_Tp>(0))
+      |          ^~~~~~~
+C:/Program Files/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/type_traits:2611:10: note: template argument deduction/substitution failed:
+test3.cpp:166:72: error: template argument 1 is invalid
+  166 |     static_assert(std::is_same_v<decltype(std::declval<ImplicitTreap<>>().get(0)), long long>);
+      |                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+test3.cpp:166:72: error: no matching function for call to 'declval<<expression error> >()'
+test3.cpp:166:72: note: there is 1 candidate
+C:/Program Files/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/type_traits:2611:10: note: candidate 1: 'template<class _Tp> decltype (__declval<_Tp>(0)) std::declval()'
+ 2611 |     auto declval() noexcept -> decltype(__declval<_Tp>(0))
+      |          ^~~~~~~
+C:/Program Files/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/type_traits:2611:10: note: template argument deduction/substitution failed:
+test3.cpp:166:72: error: template argument 1 is invalid
+  166 |     static_assert(std::is_same_v<decltype(std::declval<ImplicitTreap<>>().get(0)), long long>);
+      |                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+test3.cpp:166:93: error: template argument 1 is invalid
+  166 |     static_assert(std::is_same_v<decltype(std::declval<ImplicitTreap<>>().get(0)), long long>);
+      |                                                                                             ^
+test3.cpp:167:69: error: wrong number of template arguments (0, should be 11)
+  167 |     static_assert(std::is_same_v<decltype(std::declval<ImplicitTreap<>>().prod(0, 0)), long long>);
+      |                                                                     ^
+../../include/iramina/ImplicitTreap/ImplicitTreap.hpp:14:7: note: provided for 'template<class T, class S, class F, S (* op)(const S&, const S&), S (* e)(), S (* lift)(const T&), T (* mapping_point)(const F&, const T&), S (* mapping)(const F&, const S&, int), F (* composition)(const F&, const F&), F (* id)(), S (* reverse_prod)(const S&)> class ImplicitTreap'
+   14 | class ImplicitTreap {
+      |       ^~~~~~~~~~~~~
+test3.cpp:167:72: error: no matching function for call to 'declval<<expression error> >()'
+  167 |     static_assert(std::is_same_v<decltype(std::declval<ImplicitTreap<>>().prod(0, 0)), long long>);
+      |                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+test3.cpp:167:72: note: there is 1 candidate
+C:/Program Files/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/type_traits:2611:10: note: candidate 1: 'template<class _Tp> decltype (__declval<_Tp>(0)) std::declval()'
+ 2611 |     auto declval() noexcept -> decltype(__declval<_Tp>(0))
+      |          ^~~~~~~
+C:/Program Files/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/type_traits:2611:10: note: template argument deduction/substitution failed:
+test3.cpp:167:72: error: template argument 1 is invalid
+  167 |     static_assert(std::is_same_v<decltype(std::declval<ImplicitTreap<>>().prod(0, 0)), long long>);
+      |                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+test3.cpp:167:72: error: no matching function for call to 'declval<<expression error> >()'
+test3.cpp:167:72: note: there is 1 candidate
+C:/Program Files/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/type_traits:2611:10: note: candidate 1: 'template<class _Tp> decltype (__declval<_Tp>(0)) std::declval()'
+ 2611 |     auto declval() noexcept -> decltype(__declval<_Tp>(0))
+      |          ^~~~~~~
+C:/Program Files/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/type_traits:2611:10: note: template argument deduction/substitution failed:
+test3.cpp:167:72: error: template argument 1 is invalid
+  167 |     static_assert(std::is_same_v<decltype(std::declval<ImplicitTreap<>>().prod(0, 0)), long long>);
+      |                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+test3.cpp:167:97: error: template argument 1 is invalid
+  167 |     static_assert(std::is_same_v<decltype(std::declval<ImplicitTreap<>>().prod(0, 0)), long long>);
+      |                                                                                                 ^
+test3.cpp:168:69: error: wrong number of template arguments (0, should be 11)
+  168 |     static_assert(std::is_same_v<decltype(std::declval<ImplicitTreap<>>().all_prod()), long long>);
+      |                                                                     ^
+../../include/iramina/ImplicitTreap/ImplicitTreap.hpp:14:7: note: provided for 'template<class T, class S, class F, S (* op)(const S&, const S&), S (* e)(), S (* lift)(const T&), T (* mapping_point)(const F&, const T&), S (* mapping)(const F&, const S&, int), F (* composition)(const F&, const F&), F (* id)(), S (* reverse_prod)(const S&)> class ImplicitTreap'
+   14 | class ImplicitTreap {
+      |       ^~~~~~~~~~~~~
+test3.cpp:168:72: error: no matching function for call to 'declval<<expression error> >()'
+  168 |     static_assert(std::is_same_v<decltype(std::declval<ImplicitTreap<>>().all_prod()), long long>);
+      |                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+test3.cpp:168:72: note: there is 1 candidate
+C:/Program Files/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/type_traits:2611:10: note: candidate 1: 'template<class _Tp> decltype (__declval<_Tp>(0)) std::declval()'
+ 2611 |     auto declval() noexcept -> decltype(__declval<_Tp>(0))
+      |          ^~~~~~~
+C:/Program Files/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/type_traits:2611:10: note: template argument deduction/substitution failed:
+test3.cpp:168:72: error: template argument 1 is invalid
+  168 |     static_assert(std::is_same_v<decltype(std::declval<ImplicitTreap<>>().all_prod()), long long>);
+      |                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+test3.cpp:168:72: error: no matching function for call to 'declval<<expression error> >()'
+test3.cpp:168:72: note: there is 1 candidate
+C:/Program Files/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/type_traits:2611:10: note: candidate 1: 'template<class _Tp> decltype (__declval<_Tp>(0)) std::declval()'
+ 2611 |     auto declval() noexcept -> decltype(__declval<_Tp>(0))
+      |          ^~~~~~~
+C:/Program Files/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/type_traits:2611:10: note: template argument deduction/substitution failed:
+test3.cpp:168:72: error: template argument 1 is invalid
+  168 |     static_assert(std::is_same_v<decltype(std::declval<ImplicitTreap<>>().all_prod()), long long>);
+      |                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+test3.cpp:168:97: error: template argument 1 is invalid
+  168 |     static_assert(std::is_same_v<decltype(std::declval<ImplicitTreap<>>().all_prod()), long long>);
+      |                                                                                                 ^

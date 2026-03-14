@@ -1,0 +1,148 @@
+---
+
+# `WeightedMergeSortTree` 簡易仕様
+
+## 概要
+
+`WeightedMergeSortTree` は、配列 index の区間と `key` の区間を同時に扱う静的データ構造。
+
+各要素は `(key, weight)` を持つ。
+
+クエリでは
+
+* index 範囲 `[l, r)`
+* value 範囲 `[xl, xr)`
+
+を同時に満たす要素について、
+
+* 個数
+* `weight` の総和
+
+を取得できる。
+
+---
+
+## 入力データ
+
+構築入力は `vector<Elem>`。
+
+```cpp
+struct Elem {
+    Key key;
+    Weight weight;
+};
+```
+
+各配列位置 `i` に 1 要素 `Elem{key, weight}` がある。
+
+---
+
+## 範囲の意味
+
+### index 範囲
+
+すべて **半開区間** `[l, r)` とする。
+
+つまり
+
+```text
+l <= i < r
+```
+
+を満たす配列位置が対象。
+
+---
+
+### value 範囲
+
+すべて **半開区間** `[xl, xr)` とする。
+
+つまり
+
+```text
+xl <= key < xr
+```
+
+を満たす要素が対象。
+
+---
+
+## 公開 API
+
+### コンストラクタ
+
+```cpp
+WeightedMergeSortTree(const vector<Elem>& init)
+```
+
+`init[i]` を配列の i 番目要素として構築する。
+
+---
+
+### `size()`
+
+```cpp
+int size() const
+```
+
+元配列長 `N` を返す。
+
+---
+
+### `count(l, r, xl, xr)`
+
+```cpp
+int count(int l, int r, Key xl, Key xr) const
+```
+
+次を同時に満たす要素数を返す。
+
+* index が `[l, r)`
+* key が `[xl, xr)`
+
+---
+
+### `sum(l, r, xl, xr)`
+
+```cpp
+Weight sum(int l, int r, Key xl, Key xr) const
+```
+
+次を同時に満たす要素の `weight` 総和を返す。
+
+* index が `[l, r)`
+* key が `[xl, xr)`
+
+---
+
+## 内部で想定していること
+
+各セグ木ノードは、担当区間内の要素を `key` 昇順で保持する。
+
+ノードごとに少なくとも次を持つ。
+
+* `keys`: key 昇順配列
+* `prefix_weight_sum`: その順に対応する weight の累積和
+
+これによりノード単位では
+
+* 個数: `lower_bound(keys, xr) - lower_bound(keys, xl)`
+* 和: prefix sum の差
+
+で求める。
+
+---
+
+## 計算量
+
+* 構築: `O(N log N)`
+* `count`: `O(log^2 N)`
+* `sum`: `O(log^2 N)`
+
+---
+
+## 更新
+
+この `WeightedMergeSortTree` は **静的版** であり、更新操作は持たない。
+
+---

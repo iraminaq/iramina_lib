@@ -1,0 +1,578 @@
+# ImplicitTreap 仕様
+
+## 概要
+
+ImplicitTreap は、**配列を treap で表現する列データ構造**です。
+
+* 添字で要素を管理する
+* 区間更新
+* 区間集約
+* 区間反転
+* split / merge
+* rotate / swap_ranges
+* max_right / min_left
+
+に対応します。
+
+内部的には
+
+* **implicit index**
+* **乱択 priority**
+* **lazy propagation**
+* **reverse flag**
+
+を用います。
+
+---
+
+# 基本方針
+
+## 区間
+
+すべて **半開区間** `[l, r)` を用います。
+
+## インデックス
+
+**0-indexed** です。
+
+## クラスの性質
+
+* **move-only**
+* コピー不可
+* move は可
+
+つまり
+
+```cpp
+ImplicitTreap a;
+ImplicitTreap b = std::move(a);
+```
+
+は可能ですが、
+
+```cpp
+ImplicitTreap b = a;
+```
+
+は不可です。
+
+---
+
+# 型パラメータ
+
+```cpp
+T : 各要素の値型
+S : 区間集約値型
+F : lazy 演算子型
+```
+
+---
+
+# 利用者が与える関数
+
+```cpp
+S op(const S& a, const S& b);
+S e();
+
+S lift(const T& x);
+
+T mapping_point(const F& f, const T& x);
+S mapping(const F& f, const S& x, int len);
+
+F composition(const F& f, const F& g);
+F id();
+
+S reverse_prod(const S& x);
+```
+
+---
+
+## 各関数の意味
+
+### `op`
+
+2つの区間集約値を結合する。
+
+### `e`
+
+`op` の単位元。
+
+### `lift`
+
+単点値 `T` を、長さ 1 の区間集約値 `S` に変換する。
+
+### `mapping_point`
+
+lazy 演算 `f` を、単点値 `T` に作用させる。
+
+### `mapping`
+
+lazy 演算 `f` を、区間集約値 `S` に作用させる。
+区間長 `len` を受け取る。
+
+### `composition`
+
+lazy 演算同士の合成。
+
+`composition(f, g)` は、
+「先に `g`、後で `f` を作用させる合成」を表す想定。
+
+### `id`
+
+lazy 演算の単位元。
+
+### `reverse_prod`
+
+区間反転時に集約値 `S` をどう変換するかを与える。
+反転の影響がない集約なら恒等関数でよい。
+
+---
+
+# 内部で保持する情報
+
+各ノードは概ね次を持ちます。
+
+* `val` : 単点値 `T`
+* `prod` : 部分木の区間集約値 `S`
+* `lazy` : 保留中の lazy 演算 `F`
+* `has_lazy` : lazy が積まれているか
+* `rev` : 区間反転フラグ
+* `sz` : 部分木サイズ
+* `pri` : priority
+* `l`, `r` : 左右の子
+
+---
+
+# 構築
+
+## デフォルト構築
+
+```cpp
+ImplicitTreap();
+```
+
+空列を作る。
+
+## `vector<T>` から構築
+
+```cpp
+explicit ImplicitTreap(const vector<T>& v);
+```
+
+`v` と同じ列を持つ treap を構築する。
+
+### 計算量
+
+**O(N)**
+
+内部では
+
+* 各要素に priority を振る
+* inorder が元の順序になる Cartesian tree を作る
+
+ことで、**treap として正しい O(N) 構築**を行う。
+
+---
+
+# 完成している公開 API
+
+---
+
+## 基本情報
+
+```cpp
+int size() const;
+bool empty() const;
+```
+
+### 計算量
+
+* `size()` : **O(1)**
+* `empty()` : **O(1)**
+
+---
+
+## 1点操作
+
+```cpp
+void insert(int k, const T& x);
+void erase(int k);
+
+T get(int k);
+void set(int k, const T& x);
+```
+
+### 意味
+
+* `insert(k, x)` : `k` 番目に `x` を挿入
+* `erase(k)` : `k` 番目を削除
+* `get(k)` : `a[k]` を返す
+* `set(k, x)` : `a[k] = x`
+
+### 計算量
+
+すべて **期待 O(log N)**
+
+---
+
+## 区間操作
+
+```cpp
+void apply(int l, int r, const F& f);
+S prod(int l, int r);
+S all_prod() const;
+void reverse(int l, int r);
+```
+
+### 意味
+
+* `apply(l, r, f)` : `[l, r)` に lazy 演算を作用
+* `prod(l, r)` : `[l, r)` の区間集約値を返す
+* `all_prod()` : 全体の集約値を返す
+* `reverse(l, r)` : `[l, r)` を反転
+
+### 計算量
+
+* `apply` : **期待 O(log N)**
+* `prod` : **期待 O(log N)**
+* `all_prod` : **O(1)**
+* `reverse` : **期待 O(log N)**
+
+---
+
+## 全体取得
+
+```cpp
+vector<T> dump();
+```
+
+### 意味
+
+現在の列を `vector<T>` に戻す。
+
+### 計算量
+
+**O(N)**
+
+lazy / reverse が残っていても、全ノードを 1 回ずつたどるので O(N)。
+
+---
+
+## split / merge
+
+```cpp
+pair<ImplicitTreap, ImplicitTreap> split(int k);
+void merge(ImplicitTreap& other);
+```
+
+### `split(k)`
+
+列を
+
+* 左 `[0, k)`
+* 右 `[k, n)`
+
+に分けて 2 本返す。
+
+#### 重要
+
+`split` 後、**元のオブジェクトは空になる**。
+
+つまり
+
+```cpp
+auto [a, b] = tr.split(k);
+```
+
+の後、
+
+* `a` が左部分
+* `b` が右部分
+* `tr` は空
+
+となる。
+
+#### 計算量
+
+**期待 O(log N)**
+
+---
+
+### `merge(other)`
+
+`this` の後ろに `other` を連結する。
+
+#### 重要
+
+`merge` 後、**`other` は空になる**。
+
+#### 計算量
+
+**期待 O(log(N+M))` 相当**
+競プロ的には **期待 O(log N)** 感覚でよい。
+
+---
+
+## rotate
+
+```cpp
+void rotate(int l, int m, int r);
+```
+
+### 意味
+
+区間 `[l, r)` を
+
+* `[l, m)`
+* `[m, r)`
+
+に分け、
+
+```cpp
+[l, m) + [m, r)
+```
+
+を
+
+```cpp
+[m, r) + [l, m)
+```
+
+に並べ替える。
+
+### 例
+
+```cpp
+[0,1,2,3,4,5]
+rotate(1, 3, 5)
+```
+
+`[1,5)` は `[1,3)+[3,5)` = `[1,2] + [3,4]` なので、
+
+```cpp
+[0,3,4,1,2,5]
+```
+
+になる。
+
+### 計算量
+
+**期待 O(log N)**
+
+---
+
+## swap_ranges
+
+```cpp
+void swap_ranges(int l1, int r1, int l2, int r2);
+```
+
+### 意味
+
+2つの区間
+
+* `[l1, r1)`
+* `[l2, r2)`
+
+を入れ替える。
+
+### 現在の仕様
+
+**非重複区間のみ対応**
+
+すなわち、内部では
+
+```cpp
+r1 <= l2
+```
+
+または左右入れ替え後にそれが成り立つことを仮定する。
+
+重複区間は未対応。
+
+### 例
+
+```cpp
+[0,1,2,3,4,5,6]
+swap_ranges(1, 3, 5, 7)
+```
+
+`[1,2]` と `[5,6]` を交換して
+
+```cpp
+[0,5,6,3,4,1,2]
+```
+
+になる。
+
+### 計算量
+
+**期待 O(log N)**
+
+---
+
+## max_right / min_left
+
+```cpp
+template <class Pred>
+int max_right(int l, Pred pred);
+
+template <class Pred>
+int min_left(int r, Pred pred);
+```
+
+### 前提
+
+ACL と同じく、利用者は
+
+* `pred(e()) == true`
+* `pred` が単調
+
+を満たす必要がある。
+
+---
+
+### `max_right(l, pred)`
+
+`l` から右へ伸ばして、
+
+```cpp
+pred(prod(l, x))
+```
+
+が成り立つ最大の `x` を返す。
+
+### 計算量
+
+**期待 O(log N)**
+
+---
+
+### `min_left(r, pred)`
+
+`r` から左へ伸ばして、
+
+```cpp
+pred(prod(x, r))
+```
+
+が成り立つ最小の `x` を返す。
+
+### 計算量
+
+**期待 O(log N)**
+
+---
+
+# 追加候補として話に出ている関数
+
+まだ未実装だが候補として挙がっているものは以下。
+
+```cpp
+void push_front(const T& x);
+void push_back(const T& x);
+void pop_front();
+void pop_back();
+
+T front();
+T back();
+
+void erase(int l, int r);
+void insert(int k, const vector<T>& v);
+
+void apply_all(const F& f);
+void reverse_all();
+
+ImplicitTreap cut(int l, int r);
+void paste(int k, ImplicitTreap& other);
+
+void clear();
+```
+
+---
+
+## 参考仕様
+
+### `cut(l, r)`
+
+`[l, r)` を**切り出して返す**。
+
+* コピーではない
+* 元の treap からその区間は消える
+
+計算量は **期待 O(log N)**
+
+### `paste(k, other)`
+
+`other` 全体を位置 `k` に差し込む。
+
+* `other` は構築済みの treap を想定
+* 実行後 `other` は空になる
+
+計算量は **期待 O(log(N+M))` 相当**
+
+---
+
+# move-only による注意
+
+## できる
+
+```cpp
+ImplicitTreap tr(v);
+auto [a, b] = tr.split(k);
+a.merge(b);
+```
+
+## できない
+
+```cpp
+ImplicitTreap x = tr;   // コピー不可
+```
+
+`split` や `cut` は、**木をコピーするのではなく所有権を移す**操作と考える。
+
+---
+
+# 現時点の主要計算量まとめ
+
+* 構築 `vector<T>` から : **O(N)**
+* `size`, `empty`, `all_prod` : **O(1)**
+* `insert`, `erase`, `get`, `set` : **期待 O(log N)**
+* `apply`, `prod`, `reverse` : **期待 O(log N)**
+* `split`, `merge` : **期待 O(log N)** 級
+* `rotate`, `swap_ranges` : **期待 O(log N)**
+* `max_right`, `min_left` : **期待 O(log N)**
+* `dump` : **O(N)**
+
+---
+
+# 現在の制約・注意点
+
+## `swap_ranges`
+
+* **非重複区間のみ対応**
+* 重複区間の交換は未対応
+
+## `max_right / min_left`
+
+* `pred(e()) == true`
+* 単調性を仮定
+
+## `reverse_prod`
+
+* 順序依存の集約では必須
+* sum/min/max のように反転で変化しないなら恒等関数でよい
+
+## `composition`
+
+合成順は非常に重要。
+現在の想定は
+
+```cpp
+composition(f, g)
+```
+
+が
+**「先に g、あとで f」**
+の合成。
+

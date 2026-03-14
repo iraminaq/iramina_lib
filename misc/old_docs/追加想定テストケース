@@ -1,0 +1,69 @@
+## 追加関数の簡易仕様
+
+### `int lca(int u, int v) const;`
+
+頂点 `u`, `v` の Lowest Common Ancestor を返す。
+
+* `build_lca()` 実行後のみ使用可能
+* 返り値はノード index
+
+#### 計算量
+
+* `O(1)`
+
+---
+
+### `int depth(int v) const;`
+
+頂点 `v` の深さを返す。
+
+* 根の深さは `0`
+* `build_lca()` 実行後のみ使用可能
+
+#### 計算量
+
+* `O(1)`
+
+---
+
+### `pair<int, int> children(int v) const;`
+
+頂点 `v` の左右の子を返す。
+
+* 戻り値は `{left_child(v), right_child(v)}`
+* 子が存在しない場合は `-1`
+
+#### 計算量
+
+* `O(1)`
+
+---
+
+### `bool is_ancestor(int u, int v) const;`
+
+`u` が `v` の祖先であるかを返す。
+
+* 自分自身も祖先とみなす
+* `build_lca()` 実行後のみ使用可能
+
+#### 計算量
+
+* `O(1)`
+
+---
+
+### `const T& query(int l, int r) const;`
+
+区間 `[l, r)` における extremum の値を返す。
+
+* `Comp = less<T>` のとき最小値
+* `Comp = greater<T>` のとき最大値
+* `build_lca()` 実行後のみ使用可能
+
+#### 条件
+
+* `0 <= l < r <= N`
+
+#### 計算量
+
+* `O(1)`

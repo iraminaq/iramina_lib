@@ -1,0 +1,251 @@
+# `DynamicMergeSortTree` 簡易仕様
+
+## 概要
+
+`DynamicMergeSortTree` は、配列 index の区間と `key` の区間を同時に扱える **動的データ構造**。
+
+各配列要素は `(key, weight)` を持つ。
+
+次をサポートする。
+
+* 点更新
+* index 範囲 `[l, r)` と value 範囲 `[xl, xr)` を同時に満たす要素数
+* index 範囲 `[l, r)` と value 範囲 `[xl, xr)` を同時に満たす `weight` 総和
+
+内部的には
+
+* 外側: segment tree
+* 各ノード: `TreapSum`
+
+で構成される。
+
+---
+
+## 要素型
+
+各位置には次の要素が入る。
+
+```cpp
+struct Elem {
+    Key key;
+    Weight weight;
+};
+```
+
+### `key`
+
+値域クエリの判定に使う値。
+比較・範囲判定はこれに対して行う。
+
+### `weight`
+
+和クエリで加算する値。
+
+---
+
+## 範囲の意味
+
+### index 範囲
+
+すべて **半開区間** `[l, r)` とする。
+
+つまり
+
+```text
+l <= i < r
+```
+
+を満たす配列位置が対象。
+
+---
+
+### value 範囲
+
+すべて **半開区間** `[xl, xr)` とする。
+
+つまり
+
+```text
+xl <= key < xr
+```
+
+を満たす要素が対象。
+
+---
+
+## 公開 API
+
+### コンストラクタ
+
+```cpp
+DynamicMergeSortTree(const vector<Elem>& init)
+```
+
+初期配列 `init` から構築する。
+
+* 配列長は `init.size()`
+* `init[i]` が位置 `i` の初期要素
+
+---
+
+### `size()`
+
+```cpp
+int size() const
+```
+
+現在の配列長 `N` を返す。
+
+---
+
+### `get(p)`
+
+```cpp
+Elem get(int p) const
+```
+
+位置 `p` の現在の要素 `(key, weight)` を返す。
+
+---
+
+### `set(p, e)`
+
+```cpp
+void set(int p, const Elem& e)
+```
+
+位置 `p` の要素を `e` に置き換える。
+
+---
+
+### `set(p, key, weight)`
+
+```cpp
+void set(int p, const Key& key, const Weight& weight)
+```
+
+位置 `p` の要素を `(key, weight)` に置き換える。
+`set(p, Elem{key, weight})` の薄いラッパ。
+
+---
+
+### `count(l, r, xl, xr)`
+
+```cpp
+int count(int l, int r, const Key& xl, const Key& xr) const
+```
+
+次を同時に満たす要素数を返す。
+
+* index が `[l, r)`
+* key が `[xl, xr)`
+
+つまり
+
+```text
+l <= i < r
+xl <= key[i] < xr
+```
+
+を満たす `i` の個数。
+
+---
+
+### `sum(l, r, xl, xr)`
+
+```cpp
+Weight sum(int l, int r, const Key& xl, const Key& xr) const
+```
+
+次を同時に満たす要素の `weight` 総和を返す。
+
+* index が `[l, r)`
+* key が `[xl, xr)`
+
+つまり
+
+```text
+l <= i < r
+xl <= key[i] < xr
+```
+
+を満たす要素について、`weight[i]` を合計したもの。
+
+---
+
+## 更新の意味
+
+点更新 `set(p, ...)` は、内部的には
+
+* 古い要素 `(old_key, old_weight)` を、`p` を含む全セグ木ノードの `TreapSum` から削除
+* 新しい要素 `(new_key, new_weight)` を、同じ経路上の全セグ木ノードの `TreapSum` に挿入
+* `data_[p]` を更新
+
+という形で処理する。
+
+---
+
+## `TreapSum` 側の前提
+
+各セグ木ノードに載る `TreapSum` は、少なくとも次をサポートする前提。
+
+* `insert(key, weight)`
+* `erase_one(key, weight)`
+* `count_range(xl, xr)`  … value 範囲 `[xl, xr)`
+* `sum_range(xl, xr)`    … value 範囲 `[xl, xr)`
+
+### `TreapSum` の補足
+
+* 同じ `key` を持つ要素は内部で 1 ノードに圧縮してよい
+* 同じ `key` に異なる `weight` が入ることを許す
+* `erase_one(key, weight)` は、呼び出し側が正しい `(key, weight)` を渡す前提
+
+---
+
+## 内部構造
+
+* 配列 index 方向は segment tree で管理
+* 各セグ木ノードは、その担当 index 区間に含まれる要素を `TreapSum` で管理する
+
+そのため、区間クエリでは
+
+1. index 範囲 `[l, r)` を `O(log N)` 個のセグ木ノードに分解
+2. 各ノードの `TreapSum` に対して value 範囲 `[xl, xr)` の問い合わせを行う
+3. 結果を合算
+
+する。
+
+---
+
+## 計算量
+
+`TreapSum` の各操作を `O(log N)` とみなすと、
+
+* 構築: `O(N log^2 N)`
+* 点更新 `set`: `O(log^2 N)`
+* `count`: `O(log^2 N)`
+* `sum`: `O(log^2 N)`
+
+---
+
+## 入力制約・前提
+
+競プロライブラリとして、以下は利用者前提でよい。
+
+* `0 <= p < size()`
+* `0 <= l <= r <= size()`
+
+不正引数に対する特別な例外処理は必須ではない。
+
+---
+
+## 最小構成に含めないもの
+
+この最小構成では、次はサポート対象外。
+
+* `count_less`
+* `sum_less`
+* `sum_all(l, r)`
+* 区間更新
+* 削除専用 API
+* `vector<Key>` からの構築

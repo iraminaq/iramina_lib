@@ -1,0 +1,4 @@
+full: No such file or directory.
+C:\Users\irami\dev\iramina_lib\test\MergeSortTree/.test.exe: No such file or directory.
+No executable specified, use `target exec'.
+No stack.

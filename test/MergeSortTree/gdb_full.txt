@@ -1,0 +1,9 @@
+full: No such file or directory.
+
+warning: Couldn't find general-purpose registers in core file.
+
+warning: Couldn't find general-purpose registers in core file.
+#0  <unavailable> in ?? ()
+No executable specified, use `target exec'.
+Python Exception <class 'gdb.error'>: PC not available
+#0  <unavailable> in ?? ()

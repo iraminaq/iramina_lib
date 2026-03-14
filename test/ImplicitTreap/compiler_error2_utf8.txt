@@ -1,0 +1,173 @@
+﻿g++ : test2.cpp: In function 'void test_ro
+tate()':
+発生場所 行:1 文字:1
++ g++ -std=c++20 -I C:\Users\irami\dev\ira
+mina_lib\include test2.cpp -o ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecifie 
+   d: (test2.cpp: In f...test_rotate()':  
+  :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeComma 
+   ndError
+ 
+test2.cpp:125:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  125 |         Treap tr(vector<long long>
+{0, 1, 2, 3, 4, 5});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp:131:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  131 |         Treap tr(vector<long long>
+{1, 2, 3, 4, 5});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp:137:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  137 |         Treap tr(vector<long long>
+{1, 2, 3, 4});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp:142:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  142 |         Treap tr(vector<long long>
+{1, 2, 3, 4});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp:147:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  147 |         Treap tr(vector<long long>
+{10, 20, 30, 40});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp:152:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  152 |         Treap tr(vector<long long>
+{1, 2, 3, 4, 5});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp:160:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  160 |         Treap tr(vector<long long>
+{1, 2, 3, 4, 5, 6});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp: In function 'void test_swap_ran
+ges()':
+test2.cpp:171:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  171 |         Treap tr(vector<long long>
+{0, 1, 2, 3, 4, 5, 6});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp:177:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  177 |         Treap tr(vector<long long>
+{1, 2, 3, 4, 5, 6});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp:183:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  183 |         Treap tr(vector<long long>
+{1, 2, 3, 4, 5, 6, 7, 8});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp:189:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  189 |         Treap tr(vector<long long>
+{1, 2, 3, 4});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp:194:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  194 |         Treap tr(vector<long long>
+{1, 2, 3, 4, 5, 6});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp:201:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  201 |         Treap tr(vector<long long>
+{1, 2, 3, 4, 5, 6, 7});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp: In function 'void test_max_righ
+t()':
+test2.cpp:212:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  212 |         Treap tr(vector<long long>
+{1, 2, 3, 4, 5});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp:217:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  217 |         Treap tr(vector<long long>
+{1, 2, 3, 4, 5});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp:222:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  222 |         Treap tr(vector<long long>
+{1, 2, 3});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp:227:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  227 |         Treap tr(vector<long long>
+{5, 6, 7});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp:232:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  232 |         Treap tr(vector<long long>
+{1, 2, 3});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp:237:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  237 |         Treap tr(vector<long long>
+{1, 2, 3, 4});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp:243:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  243 |         Treap tr(vector<long long>
+{1, 2, 3, 4, 5});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp: In function 'void test_min_left
+()':
+test2.cpp:253:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  253 |         Treap tr(vector<long long>
+{1, 2, 3, 4, 5});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp:258:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  258 |         Treap tr(vector<long long>
+{1, 2, 3, 4, 5});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp:263:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  263 |         Treap tr(vector<long long>
+{1, 2, 3});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp:268:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  268 |         Treap tr(vector<long long>
+{5, 6, 7});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp:273:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  273 |         Treap tr(vector<long long>
+{1, 2, 3});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp:278:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  278 |         Treap tr(vector<long long>
+{1, 2, 3, 4});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp:284:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  284 |         Treap tr(vector<long long>
+{1, 2, 3, 4, 5});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp: In function 'void test_bounds_c
+onsistency()':
+test2.cpp:294:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  294 |         Treap tr(vector<long long>
+{2, 2, 2, 2, 2});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp:301:18: error: variable 'Treap t
+r' has initializer but incomplete type
+  301 |         Treap tr(vector<long long>
+{10, 20, 30});
+      |                  ^~~~~~~~~~~~~~~~~
+test2.cpp: In function 'void test_complex_
+case()':
+test2.cpp:311:14: error: variable 'Treap t
+r' has initializer but incomplete type
+  311 |     Treap tr(vector<long long>{1, 
+2, 3, 4, 5, 6, 7, 8});
+      |              ^~~~~~~~~~~~~~~~~

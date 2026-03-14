@@ -1,0 +1,140 @@
+﻿g++ : In file included from test1.cpp:50:
+発生場所 行:1 文字:1
++ g++ -std=c++20 -Wall -Wextra -I C:\Users
+\irami\dev\iramina_lib\includ ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecifie 
+   d: (In file included from test1.cpp:5  
+  0::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeComma 
+   ndError
+ 
+C:\Users\irami\dev\iramina_lib\include/ira
+mina/ImplicitTreap/ImplicitTreap.hpp:398:1
+4: error: 'void ImplicitTreap<T, S, F, op,
+ e, lift, mapping_point, mapping, composit
+ion, id, reverse_prod>::rotate(int, int, i
+nt)' cannot be overloaded with 'void Impli
+citTreap<T, S, F, op, e, lift, mapping_poi
+nt, mapping, composition, id, reverse_prod
+>::rotate(int, int, int)' [-Wtemplate-body
+]
+  398 |         void rotate(int l, int m, 
+int r) {
+      |              ^~~~~~
+C:\Users\irami\dev\iramina_lib\include/ira
+mina/ImplicitTreap/ImplicitTreap.hpp:234:1
+4: note: previous declaration 'void Implic
+itTreap<T, S, F, op, e, lift, mapping_poin
+t, mapping, composition, id, reverse_prod>
+::rotate(int, int, int)'
+  234 |         void rotate(int l, int m, 
+int r) {
+      |              ^~~~~~
+C:\Users\irami\dev\iramina_lib\include/ira
+mina/ImplicitTreap/ImplicitTreap.hpp:406:1
+0: error: 'void ImplicitTreap<T, S, F, op,
+ e, lift, mapping_point, mapping, composit
+ion, id, reverse_prod>::swap_ranges(int, i
+nt, int, int)' cannot be overloaded with '
+void ImplicitTreap<T, S, F, op, e, lift, m
+apping_point, mapping, composition, id, re
+verse_prod>::swap_ranges(int, int, int, in
+t)' [-Wtemplate-body]
+  406 |     void swap_ranges(int l1, int r
+1, int l2, int r2) {
+      |          ^~~~~~~~~~~
+C:\Users\irami\dev\iramina_lib\include/ira
+mina/ImplicitTreap/ImplicitTreap.hpp:242:1
+0: note: previous declaration 'void Implic
+itTreap<T, S, F, op, e, lift, mapping_poin
+t, mapping, composition, id, reverse_prod>
+::swap_ranges(int, int, int, int)'
+  242 |     void swap_ranges(int l1, int r
+1, int l2, int r2) {
+      |          ^~~~~~~~~~~
+C:\Users\irami\dev\iramina_lib\include/ira
+mina/ImplicitTreap/ImplicitTreap.hpp:426:9
+: error: 'template<class T, class S, class
+ F, S (* op)(const S&, const S&), S (* e)(
+), S (* lift)(const T&), T (* mapping_poin
+t)(const F&, const T&), S (* mapping)(cons
+t F&, const S&, int), F (* composition)(co
+nst F&, const F&), F (* id)(), S (* revers
+e_prod)(const S&)> template<class Pred> in
+t ImplicitTreap<T, S, F, op, e, lift, mapp
+ing_point, mapping, composition, id, rever
+se_prod>::max_right(int, Pred)' cannot be 
+overloaded with 'template<class T, class S
+, class F, S (* op)(const S&, const S&), S
+ (* e)(), S (* lift)(const T&), T (* mappi
+ng_point)(const F&, const T&), S (* mappin
+g)(const F&, const S&, int), F (* composit
+ion)(const F&, const F&), F (* id)(), S (*
+ reverse_prod)(const S&)> template<class P
+red> int ImplicitTreap<T, S, F, op, e, lif
+t, mapping_point, mapping, composition, id
+, reverse_prod>::max_right(int, Pred)' [-W
+template-body]
+  426 |     int max_right(int l, Pred pred
+) {
+      |         ^~~~~~~~~
+C:\Users\irami\dev\iramina_lib\include/ira
+mina/ImplicitTreap/ImplicitTreap.hpp:262:9
+: note: previous declaration 'template<cla
+ss T, class S, class F, S (* op)(const S&,
+ const S&), S (* e)(), S (* lift)(const T&
+), T (* mapping_point)(const F&, const T&)
+, S (* mapping)(const F&, const S&, int), 
+F (* composition)(const F&, const F&), F (
+* id)(), S (* reverse_prod)(const S&)> tem
+plate<class Pred> int ImplicitTreap<T, S, 
+F, op, e, lift, mapping_point, mapping, co
+mposition, id, reverse_prod>::max_right(in
+t, Pred)'
+  262 |     int max_right(int l, Pred pred
+) {
+      |         ^~~~~~~~~
+C:\Users\irami\dev\iramina_lib\include/ira
+mina/ImplicitTreap/ImplicitTreap.hpp:438:9
+: error: 'template<class T, class S, class
+ F, S (* op)(const S&, const S&), S (* e)(
+), S (* lift)(const T&), T (* mapping_poin
+t)(const F&, const T&), S (* mapping)(cons
+t F&, const S&, int), F (* composition)(co
+nst F&, const F&), F (* id)(), S (* revers
+e_prod)(const S&)> template<class Pred> in
+t ImplicitTreap<T, S, F, op, e, lift, mapp
+ing_point, mapping, composition, id, rever
+se_prod>::min_left(int, Pred)' cannot be o
+verloaded with 'template<class T, class S,
+ class F, S (* op)(const S&, const S&), S 
+(* e)(), S (* lift)(const T&), T (* mappin
+g_point)(const F&, const T&), S (* mapping
+)(const F&, const S&, int), F (* compositi
+on)(const F&, const F&), F (* id)(), S (* 
+reverse_prod)(const S&)> template<class Pr
+ed> int ImplicitTreap<T, S, F, op, e, lift
+, mapping_point, mapping, composition, id,
+ reverse_prod>::min_left(int, Pred)' [-Wte
+mplate-body]
+  438 |     int min_left(int r, Pred pred)
+ {
+      |         ^~~~~~~~
+C:\Users\irami\dev\iramina_lib\include/ira
+mina/ImplicitTreap/ImplicitTreap.hpp:274:9
+: note: previous declaration 'template<cla
+ss T, class S, class F, S (* op)(const S&,
+ const S&), S (* e)(), S (* lift)(const T&
+), T (* mapping_point)(const F&, const T&)
+, S (* mapping)(const F&, const S&, int), 
+F (* composition)(const F&, const F&), F (
+* id)(), S (* reverse_prod)(const S&)> tem
+plate<class Pred> int ImplicitTreap<T, S, 
+F, op, e, lift, mapping_point, mapping, co
+mposition, id, reverse_prod>::min_left(int
+, Pred)'
+  274 |     int min_left(int r, Pred pred)
+ {
+      |         ^~~~~~~~

@@ -1,0 +1,537 @@
+---
+
+# 想定テストケース一覧
+
+## 1. 空配列
+
+### 入力
+
+```cpp
+vector<int> a = {};
+CartesianTree<int> ct(a);
+```
+
+### 確認したいこと
+
+* `size() == 0`
+* `root() == -1`
+* `build_lca()` を呼んでも落ちない
+* 空配列に対する `query_index()` は呼ばない前提
+
+---
+
+## 2. 要素数 1
+
+### 入力
+
+```cpp
+vector<int> a = {42};
+CartesianTree<int> ct(a);
+ct.build_lca();
+```
+
+### 確認したいこと
+
+* `size() == 1`
+* `root() == 0`
+* `parent(0) == -1`
+* `left_child(0) == -1`
+* `right_child(0) == -1`
+* `value(0) == 42`
+* `subtree_range(0) == {0, 1}`
+* `subtree_size(0) == 1`
+* `query_index(0, 1) == 0`
+
+---
+
+## 3. strictly increasing（min-cartesian）
+
+### 入力
+
+```cpp
+vector<int> a = {1, 2, 3, 4, 5};
+CartesianTree<int> ct(a);
+ct.build_lca();
+```
+
+### 期待される構造
+
+min-cartesian では根が最左になり、右に鎖状になる。
+
+* `root() == 0`
+* `parent(0) == -1`
+* `right_child(0) == 1`
+* `right_child(1) == 2`
+* `right_child(2) == 3`
+* `right_child(3) == 4`
+* すべての `left_child(i) == -1`
+
+### 区間クエリ
+
+* `query_index(0, 5) == 0`
+* `query_index(1, 5) == 1`
+* `query_index(2, 4) == 2`
+* `query_index(4, 5) == 4`
+
+### 部分木
+
+* `subtree_range(0) == {0, 5}`
+* `subtree_range(1) == {1, 5}`
+* `subtree_range(2) == {2, 5}`
+* `subtree_size(0) == 5`
+* `subtree_size(3) == 2`
+
+---
+
+## 4. strictly decreasing（min-cartesian）
+
+### 入力
+
+```cpp
+vector<int> a = {5, 4, 3, 2, 1};
+CartesianTree<int> ct(a);
+ct.build_lca();
+```
+
+### 期待される構造
+
+min-cartesian では根が最右になり、左に鎖状になる。
+
+* `root() == 4`
+* `parent(4) == -1`
+* `left_child(4) == 3`
+* `left_child(3) == 2`
+* `left_child(2) == 1`
+* `left_child(1) == 0`
+* すべての `right_child(i) == -1`
+
+### 区間クエリ
+
+* `query_index(0, 5) == 4`
+* `query_index(0, 4) == 3`
+* `query_index(0, 3) == 2`
+* `query_index(1, 2) == 1`
+
+---
+
+## 5. strictly increasing（max-cartesian）
+
+### 入力
+
+```cpp
+vector<int> a = {1, 2, 3, 4, 5};
+CartesianTree<int, greater<int>> ct(a);
+ct.build_lca();
+```
+
+### 期待される構造
+
+max-cartesian では根が最右。
+
+* `root() == 4`
+* `query_index(0, 5) == 4`
+* `query_index(0, 4) == 3`
+* `query_index(1, 3) == 2`
+
+---
+
+## 6. strictly decreasing（max-cartesian）
+
+### 入力
+
+```cpp
+vector<int> a = {5, 4, 3, 2, 1};
+CartesianTree<int, greater<int>> ct(a);
+ct.build_lca();
+```
+
+### 期待される構造
+
+max-cartesian では根が最左。
+
+* `root() == 0`
+* `query_index(0, 5) == 0`
+* `query_index(1, 5) == 1`
+* `query_index(2, 4) == 2`
+
+---
+
+## 7. 一般的な配列
+
+### 入力
+
+```cpp
+vector<int> a = {1, 3, 4, 2, 6};
+CartesianTree<int> ct(a);
+ct.build_lca();
+```
+
+### 確認したいこと
+
+* `query_index(0, 5) == 0`
+* `query_index(1, 4) == 3`
+* `query_index(1, 3) == 1`
+* `query_index(2, 5) == 3`
+* `query_index(4, 5) == 4`
+
+### 追加確認
+
+各 `v` について
+
+* `subtree_range(v).second - subtree_range(v).first == subtree_size(v)`
+
+---
+
+## 8. 重複値のみ
+
+### 入力
+
+```cpp
+vector<int> a = {5, 5, 5, 5};
+CartesianTree<int> ct(a);
+ct.build_lca();
+```
+
+### 確認したいこと
+
+* 構築が落ちない
+* `query_index(0, 4)` の結果が実装仕様と一致する
+* 同値時の tie-break が仕様通りか確認する
+
+### 注意
+
+この実装では「同値では pop しない」ため、
+**左側優先の形**になることを確認する。
+
+たとえば
+
+* `root() == 0`
+* `query_index(0, 4) == 0`
+* `query_index(1, 4) == 1`
+
+を期待する。
+
+---
+
+## 9. 重複を含む一般ケース
+
+### 入力
+
+```cpp
+vector<int> a = {2, 1, 1, 3, 1};
+CartesianTree<int> ct(a);
+ct.build_lca();
+```
+
+### 確認したいこと
+
+* 同値最小が複数あるとき、返る index が仕様通り
+* `query_index(0, 5)`
+* `query_index(1, 3)`
+* `query_index(2, 5)`
+
+などで tie-break が一貫しているか
+
+---
+
+## 10. `subtree_range` の整合性
+
+### 任意の配列
+
+```cpp
+vector<int> a = {4, 2, 5, 1, 3};
+CartesianTree<int> ct(a);
+```
+
+### 確認したいこと
+
+全頂点 `v` について
+
+* `0 <= l < r <= n`
+* `subtree_size(v) == r - l`
+* `l <= v < r`
+
+が成り立つ
+
+ここで
+
+```cpp
+auto [l, r] = ct.subtree_range(v);
+```
+
+---
+
+## 11. 親子関係の整合性
+
+### 任意の配列
+
+```cpp
+vector<int> a = {4, 2, 5, 1, 3};
+CartesianTree<int> ct(a);
+```
+
+### 確認したいこと
+
+全頂点 `v` について
+
+* `left_child(v) != -1` なら `parent(left_child(v)) == v`
+* `right_child(v) != -1` なら `parent(right_child(v)) == v`
+* 根 `r = root()` は `parent(r) == -1`
+
+---
+
+## 12. inorder が元配列順になること
+
+### 任意の配列
+
+```cpp
+vector<int> a = {4, 2, 5, 1, 3};
+CartesianTree<int> ct(a);
+```
+
+### 確認したいこと
+
+木を inorder traversal した結果が
+
+```cpp
+0, 1, 2, 3, 4
+```
+
+になること
+
+これは Cartesian Tree の定義の核なので重要。
+
+---
+
+## 13. comparator 条件の確認
+
+### min-cartesian
+
+```cpp
+vector<int> a = {4, 2, 5, 1, 3};
+CartesianTree<int> ct(a);
+```
+
+### 確認したいこと
+
+全辺 `p -> c` について
+
+```cpp
+a[p] <= a[c]
+```
+
+が成り立つ（重複込み）
+
+### max-cartesian
+
+```cpp
+CartesianTree<int, greater<int>> ct(a);
+```
+
+では全辺 `p -> c` について
+
+```cpp
+a[p] >= a[c]
+```
+
+が成り立つ
+
+---
+
+## 14. `build_lca()` を複数回呼ぶ
+
+### 入力
+
+```cpp
+vector<int> a = {3, 1, 4, 2};
+CartesianTree<int> ct(a);
+ct.build_lca();
+ct.build_lca();
+ct.build_lca();
+```
+
+### 確認したいこと
+
+* 落ちない
+* 結果が変わらない
+* `query_index()` が正常動作する
+
+---
+
+## 15. `build_lca()` 前後で基本 API が変わらない
+
+### 入力
+
+```cpp
+vector<int> a = {3, 1, 4, 2};
+CartesianTree<int> ct(a);
+```
+
+### 確認したいこと
+
+`build_lca()` 前後で
+
+* `root()`
+* `parent(v)`
+* `left_child(v)`
+* `right_child(v)`
+* `subtree_range(v)`
+* `subtree_size(v)`
+* `value(v)`
+
+の結果が変わらない
+
+---
+
+## 16. 小区間クエリ
+
+### 入力
+
+```cpp
+vector<int> a = {7, 2, 9, 1, 5};
+CartesianTree<int> ct(a);
+ct.build_lca();
+```
+
+### 確認したいこと
+
+長さ 1 区間:
+
+* `query_index(0, 1) == 0`
+* `query_index(1, 2) == 1`
+* `query_index(4, 5) == 4`
+
+長さ 2 区間:
+
+* `query_index(0, 2) == 1`
+* `query_index(2, 4) == 3`
+* `query_index(3, 5) == 3`
+
+---
+
+## 17. 全区間総当たりチェック
+
+### 小さめの配列
+
+```cpp
+vector<int> a = {4, 1, 3, 2};
+CartesianTree<int> ct(a);
+ct.build_lca();
+```
+
+### 確認したいこと
+
+すべての `0 <= l < r <= n` について
+
+```cpp
+int idx = ct.query_index(l, r);
+```
+
+が、愚直な
+
+```cpp
+min_element(a.begin() + l, a.begin() + r) - a.begin()
+```
+
+と一致すること
+
+max-cartesian でも同様に `max_element` と照合する。
+
+これはかなり強いテストです。
+
+---
+
+## 18. ランダムテスト
+
+### 方針
+
+小さい `n`（例: `1..20`）でランダム配列を大量生成し、
+
+* min-cartesian
+* max-cartesian
+
+両方について以下を検証する。
+
+### 確認項目
+
+* 親子関係の整合性
+* inorder 順が `0..n-1`
+* comparator 条件
+* `subtree_range` の整合性
+* 全区間の `query_index(l, r)` が愚直解と一致
+
+これは自動テストの本命。
+
+---
+
+## 19. 大きめ入力での性能確認
+
+### 入力例
+
+* `n = 2e5`
+* increasing
+* decreasing
+* random
+* all equal
+
+### 確認したいこと
+
+* 構築が `O(N)` 相当で終わる
+* `build_lca()` が `O(N log N)` 相当で終わる
+* `query_index()` を多数回呼んでも十分高速
+
+---
+
+## 20. 不正入力の扱い
+
+### 確認したいこと
+
+この実装では `assert` 前提なので、
+
+* `query_index(l, r)` で `l >= r`
+* `l < 0`
+* `r > n`
+* `build_lca()` 前に `query_index()`
+
+は **未定義ではなく assert 失敗** として扱うことを確認する。
+
+---
+
+# 最低限重要なテストセット
+
+手で軽く投げるなら、まずはこの 6 個が重要です。
+
+1. 空配列
+2. 要素数 1
+3. increasing
+4. decreasing
+5. 重複あり
+6. 全区間総当たり vs 愚直
+
+---
+
+# AI に渡しやすいテスト観点まとめ
+
+* 構造テスト
+
+  * 親子関係
+  * root
+  * inorder
+  * comparator 条件
+
+* 部分木テスト
+
+  * `subtree_range`
+  * `subtree_size`
+
+* クエリテスト
+
+  * `query_index` vs 愚直
+
+* 境界テスト
+
+  * 空
+  * 1 要素
+  * 単調
+  * 全 equal
+  * 重複
