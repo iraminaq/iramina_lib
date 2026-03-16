@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <random>
 
-#include "../../include/iramina/WeightedMergeSortTree/WeightedMergeSortTree.hpp"
+#include "../../include/iramina/BinaryTree/WeightedMergeSortTree.hpp"
 
 using namespace std;
 

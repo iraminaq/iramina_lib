@@ -5,8 +5,8 @@
 using namespace std;
 
 // TreapSum, DynamicMergeSortTree を include 済み想定
-#include <iramina/TreapSum/TreapSum.hpp>
-#include <iramina/DynamicMergeSortTree/DynamicMergeSortTree.hpp>
+#include <iramina/BinaryTree/TreapSum.hpp>
+#include <iramina/BinaryTree/DynamicMergeSortTree.hpp>
 
 void test_single_element() {
     using DMST = DynamicMergeSortTree<int, long long>;

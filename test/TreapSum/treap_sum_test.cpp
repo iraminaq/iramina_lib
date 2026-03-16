@@ -3,7 +3,7 @@
 #include <random>
 #include <algorithm>
 #include <cassert>
-#include "iramina/TreapSum/TreapSum.hpp"
+#include "iramina/BinaryTree/TreapSum.hpp"
 
 using namespace std;
 

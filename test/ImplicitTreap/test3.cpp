@@ -2,7 +2,7 @@
 using namespace std;
 
 // ImplicitTreap.hpp を include して使う想定
-#include <iramina/ImplicitTreap/ImplicitTreap.hpp>
+#include <iramina/BinaryTree/ImplicitTreap.hpp>
 
 void test_default_construct() {
     ImplicitTreap<> tr;

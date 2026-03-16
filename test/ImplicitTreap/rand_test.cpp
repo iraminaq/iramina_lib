@@ -39,7 +39,7 @@ S reverse_prod(const S& x) { return x; }
 // ここで ImplicitTreap を include
 // =========================
 
-#include <iramina/ImplicitTreap/ImplicitTreap.hpp>
+#include <iramina/BinaryTree/ImplicitTreap.hpp>
 
 using Treap = ImplicitTreap<
     T, S, F,

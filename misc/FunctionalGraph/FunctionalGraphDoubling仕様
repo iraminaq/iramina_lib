@@ -1,0 +1,575 @@
+
+
+今回は前回の `FunctionalGraph` とは **独立実装** です。
+依存させず、`to` と `one_step_value` だけから構築できる形を想定します。
+
+---
+
+# FunctionalGraphDoubling<Monoid> 実装指示
+
+## 目的
+
+**functional graph 上での jump クエリ** を高速に処理するライブラリ
+`FunctionalGraphDoubling<Monoid>` を実装してください。
+
+このライブラリは、各頂点から遷移先がちょうど1つ定まる状況で、
+
+* 頂点 `v`
+* 非負整数 `k`
+
+が与えられたときに
+
+* `k` 回後の行き先
+* その `k` ステップの途中で得られる値の集約結果
+
+を返せるようにするものです。
+
+---
+
+## 扱いたいクエリ
+
+クエリ `(v, k)` に対して、
+
+* `v` から `k` 回遷移した先の頂点
+* その `k` 回の遷移で得られる値の monoid 積
+
+を返してください。
+
+たとえば
+
+* パス上の sum
+* xor
+* min / max
+* gcd
+* affine 合成
+
+などを扱えるようにしたいです。
+
+---
+
+## このライブラリの思想
+
+このライブラリは **functional graph 専用の doubling + monoid 集約器** です。
+
+### やること
+
+* `to[v]` をもとにダブリング表 `nxt[j][v]` を作る
+* その `2^j` ステップでの集約値 `acc[j][v]` を作る
+* クエリごとに `k` を2進展開して処理する
+
+### やらないこと
+
+* サイクル分解
+* 巨大整数 `k` 対応
+* `FunctionalGraph` への依存
+* 木/森/LCA 機能
+
+今回は **`long long k` に対する jump + monoid** に専念してください。
+
+---
+
+## インターフェース
+
+### クラス名
+
+`FunctionalGraphDoubling<Monoid>`
+
+### 想定構造
+
+以下のような形を基本にしてください。
+
+```cpp
+template<class Monoid>
+struct FunctionalGraphDoubling {
+    using T = typename Monoid::value_type;
+
+    struct Result {
+        int v;
+        T prod;
+    };
+
+    int n;
+    int log;
+    std::vector<std::vector<int>> nxt;
+    std::vector<std::vector<T>> acc;
+
+    FunctionalGraphDoubling();
+    FunctionalGraphDoubling(
+        const std::vector<int>& to,
+        const std::vector<T>& one_step_value,
+        long long max_k
+    );
+
+    void init(
+        const std::vector<int>& to,
+        const std::vector<T>& one_step_value,
+        long long max_k
+    );
+
+    Result jump(int v, long long k) const;
+
+    int kth_next(int v, long long k) const;
+    T path_prod(int v, long long k) const;
+};
+```
+
+---
+
+## Monoid に要求するもの
+
+`Monoid` は以下を持つものとしてください。
+
+```cpp
+struct Monoid {
+    using value_type = ...;
+
+    static value_type op(const value_type& a, const value_type& b);
+    static value_type e();
+};
+```
+
+### 意味
+
+* `op(a, b)`
+  左から右への順に集約する二項演算
+* `e()`
+  単位元
+
+---
+
+## 演算順序についての重要事項
+
+`op(a, b)` の意味は
+
+> **先に `a` の区間を通り、その後に `b` の区間を通る**
+
+という順序にしてください。
+
+つまり `jump(v, k)` で accumulating する際は
+
+```cpp
+res = Monoid::op(res, acc[i][cur]);
+```
+
+としてください。
+
+これは sum/xor/min/max では順序の影響が見えませんが、
+**affine 合成や行列積では非常に重要** です。
+
+---
+
+## one_step_value の意味
+
+`one_step_value[v]` は
+
+> **遷移 `v -> to[v]` に対応する1ステップ分の寄与**
+
+と定義してください。
+
+つまりこれは **辺重み型** の設計です。
+
+### 例
+
+* 「移動先頂点の重みを足す」なら
+  `one_step_value[v] = A[to[v]]`
+* 「移動元頂点の重みを足す」なら
+  `one_step_value[v] = A[v]`
+* 「辺ラベルを合成する」なら
+  その辺の値
+
+この定義に固定することで、始点/終点を含むかの解釈ブレを減らします。
+
+---
+
+## `jump(v, k)` の意味
+
+`jump(v, k)` は
+
+* 頂点 `v` から **ちょうど `k` 回遷移**
+* その間の `k` 本の辺に対応する monoid 積
+
+を返してください。
+
+### 特に `k = 0` のとき
+
+* 行き先は `v`
+* 集約値は `Monoid::e()`
+
+としてください。
+
+---
+
+## 保持する配列の意味
+
+### `nxt[j][v]`
+
+* 頂点 `v` から `2^j` 回遷移した先
+
+### `acc[j][v]`
+
+* 頂点 `v` から始めて `2^j` 回遷移する間の monoid 積
+
+つまり
+
+```cpp
+acc[0][v] = one_step_value[v]
+nxt[0][v] = to[v]
+```
+
+であり、
+
+```cpp
+nxt[j+1][v] = nxt[j][nxt[j][v]]
+acc[j+1][v] = Monoid::op(acc[j][v], acc[j][nxt[j][v]])
+```
+
+としてください。
+
+この順序は必ず守ってください。
+
+---
+
+## 実装方針
+
+### 1. `log` の決め方
+
+`max_k` まで扱えるように `log` を決めてください。
+
+たとえば
+
+```cpp
+log = 1;
+while ((1LL << log) <= max_k) ++log;
+```
+
+のような形でよいです。
+
+ただし `max_k` が `0` の場合でも最低1段は持つようにしてください。
+
+### 2. 初期化
+
+`init(to, one_step_value, max_k)` では
+
+* `n`
+* `log`
+* `nxt`
+* `acc`
+
+をすべて再構築してください。
+
+### 3. クエリ
+
+`jump(v, k)` では
+
+* `res = e()`
+* `cur = v`
+
+から始めて、
+各 bit を見ながら
+
+```cpp
+if ((k >> i) & 1LL) {
+    res = Monoid::op(res, acc[i][cur]);
+    cur = nxt[i][cur];
+}
+```
+
+としてください。
+
+最後に `{cur, res}` を返す。
+
+---
+
+## 計算量
+
+### 構築
+
+* `O(N log max_k)`
+
+### クエリ
+
+* `O(log max_k)`
+
+### メモリ
+
+* `O(N log max_k)`
+
+---
+
+## 検証すべき性質
+
+任意の `v, k` について
+
+* `jump(v, 0).v == v`
+* `jump(v, 0).prod == Monoid::e()`
+
+また
+
+* `kth_next(v, k) == jump(v, k).v`
+* `path_prod(v, k) == jump(v, k).prod`
+
+であること。
+
+さらに、
+
+```cpp
+jump(v, a + b)
+```
+
+は概念的に
+
+* まず `jump(v, a)`
+* その行き先から `jump(..., b)`
+
+した結果と一致すること。
+
+集約値も同様に
+
+```cpp
+prod(a + b) = op(prod(a), prod_from_after_a(b))
+```
+
+となること。
+
+---
+
+## 補助メソッド
+
+以下を用意してください。
+
+```cpp
+int kth_next(int v, long long k) const;
+T path_prod(int v, long long k) const;
+```
+
+実装は `jump()` の薄い wrapper でよいです。
+
+---
+
+## 入力条件
+
+* `to.size() == one_step_value.size()`
+* 各 `to[v]` は `0 <= to[v] < n`
+* `max_k >= 0`
+* クエリ `k >= 0`
+
+重い例外処理は不要ですが、少なくとも不自然な実装にはしないでください。
+
+---
+
+## 実装上の注意
+
+### 1. 演算順序を絶対に崩さない
+
+以下で統一してください。
+
+```cpp
+acc[j+1][v] = op(acc[j][v], acc[j][nxt[j][v]])
+```
+
+これは
+
+* 先に前半 `2^j`
+* 次に後半 `2^j`
+
+という意味です。
+
+### 2. `jump()` 内でも順序を揃える
+
+```cpp
+res = op(res, acc[i][cur]);
+```
+
+としてください。
+`op(acc[i][cur], res)` ではありません。
+
+### 3. `k=0` を正しく扱う
+
+かなり大事です。
+パス長0で単位元を返す仕様を保証してください。
+
+### 4. `log` の最低値
+
+`max_k=0` でも `log=1` 以上にしてください。
+
+### 5. long long 前提
+
+今回は `k` は `long long` 前提でよいです。
+巨大整数文字列対応は不要です。
+
+---
+
+## 使用例イメージ
+
+```cpp
+struct SumMonoid {
+    using value_type = long long;
+    static value_type op(value_type a, value_type b) {
+        return a + b;
+    }
+    static value_type e() {
+        return 0LL;
+    }
+};
+
+std::vector<int> to = {1, 2, 0};
+std::vector<long long> w = {10, 20, 30}; // 辺 v -> to[v] の寄与
+
+FunctionalGraphDoubling<SumMonoid> dbl(to, w, 10);
+
+auto res = dbl.jump(0, 4);
+```
+
+このとき、遷移は
+
+* `0 -> 1` : 10
+* `1 -> 2` : 20
+* `2 -> 0` : 30
+* `0 -> 1` : 10
+
+なので
+
+* `res.v == 1`
+* `res.prod == 70`
+
+となるべきです。
+
+---
+
+## テストで確認してほしいケース
+
+### 1. 1つのサイクル
+
+```cpp
+to = {1,2,0}
+w  = {10,20,30}
+```
+
+* `jump(0,0)` → `(0,0)`
+* `jump(0,1)` → `(1,10)`
+* `jump(0,2)` → `(2,30)`
+* `jump(0,3)` → `(0,60)`
+* `jump(0,4)` → `(1,70)`
+
+### 2. 自己ループ
+
+```cpp
+to = {0}
+w  = {5}
+```
+
+* `jump(0,7)` → `(0,35)`
+
+### 3. 木付き functional graph
+
+```cpp
+to = {1,2,2,2}
+w  = {3,4,5,6}
+```
+
+例えば
+
+* `0 -> 1 -> 2 -> 2 -> 2 ...`
+
+なので
+
+* `jump(0,1)` → `(1,3)`
+* `jump(0,2)` → `(2,7)`
+* `jump(0,5)` → `(2,22)`
+
+### 4. xor monoid
+
+sum 以外でも動くことを確認。
+
+### 5. 順序依存 monoid
+
+affine 合成など、**順序を間違えると壊れるもの**でテストしてください。
+
+---
+
+## affine 合成 monoid の想定例
+
+順序確認用として、以下のような monoid でテストしてよいです。
+
+```cpp
+struct AffineMonoid {
+    struct F {
+        long long a, b;
+    };
+    using value_type = F;
+
+    static F op(const F& f, const F& g) {
+        // 先に f、次に g ではなく、
+        // 「前の区間」→「後ろの区間」の意味に合うよう
+        // 仕様に沿って統一して実装すること
+    }
+
+    static F e() {
+        return {1, 0};
+    }
+};
+```
+
+ただし、`op` の向きは本ライブラリの定義
+「前半 → 後半」
+に合わせてください。
+
+---
+
+## 今回やらなくてよいこと
+
+以下は不要です。
+
+* cycle decomposition
+* `FunctionalGraph` への依存
+* 逆辺
+* 巨大整数 `k`
+* サイクル上の prefix sum
+* クエリバッチ最適化
+* 動的更新
+* sparse table 的拡張
+* LCA
+* weighted tree 専用機能
+
+---
+
+## 実装スタイル
+
+* C++23
+* 競プロ用ヘッダとして使いやすく
+* 過剰な抽象化は不要
+* `init()` を複数回呼んでも壊れないようにする
+* コメントは簡潔に
+* 演算順序が分かるコメントは入れてよい
+
+---
+
+## 最終出力として欲しいもの
+
+実装AIには以下を出力してもらってください。
+
+1. `FunctionalGraphDoubling<Monoid>` の完成コード
+2. 必要なら最小限の補足コメント
+3. 可能なら `SumMonoid` と簡単なテストコード
+
+---
+
+## 実装者向け補足
+
+このライブラリの本質は
+
+* `nxt[j][v]`: `2^j` step 後の頂点
+* `acc[j][v]`: その `2^j` step の monoid 積
+
+を持ち、
+
+```cpp
+nxt[j+1][v] = nxt[j][nxt[j][v]]
+acc[j+1][v] = op(acc[j][v], acc[j][nxt[j][v]])
+```
+
+で構築することです。
+
+特に **順序依存モノイドでも正しく動くように、acc の向きと jump 時の op の向きを統一すること** を最重要要件としてください。
+
+

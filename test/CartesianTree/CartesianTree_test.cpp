@@ -7,7 +7,7 @@
 #include <random>
 #include <chrono>
 
-#include "../include/iramina/CartesianTree/CartesianTree.hpp"
+#include "../include/iramina/BinaryTree/CartesianTree.hpp"
 
 using namespace std;
 
