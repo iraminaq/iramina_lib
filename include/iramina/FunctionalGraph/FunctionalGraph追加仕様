@@ -1,0 +1,14 @@
+// v がサイクル上にあるか
+bool is_on_cycle(int v) const;
+
+// v から何回遷移すると初めてサイクルに到達するか
+// v 自身がサイクル上なら 0
+int dist_to_cycle_of(int v) const;
+
+// v が最終的に属するサイクルの長さ
+// v が木部分でも、その流れ込む先のサイクル長を返す
+int cycle_length_of(int v) const;
+
+// v から進み続けたとき最初に到達するサイクル頂点
+// v がサイクル上なら v 自身
+int root_cycle_vertex_of(int v) const;

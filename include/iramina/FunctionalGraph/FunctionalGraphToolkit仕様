@@ -1,0 +1,567 @@
+
+
+前提として、このクラスは
+
+* `FunctionalGraph fg;`
+* `FunctionalGraphDoubling<Monoid> dbl;`
+
+を内部に持ち、
+**通常の jump は doubling**、
+**巨大 10 進整数は cycle 情報 + 必要に応じて doubling**
+で処理する上位クラスとします。
+
+---
+
+# `FunctionalGraphToolkit` API 仕様
+
+## 前提
+
+```cpp
+template<class Monoid>
+struct FunctionalGraphToolkit {
+    using T = typename Monoid::value_type;
+
+    struct Result {
+        int v;
+        T prod;
+    };
+
+    ...
+};
+```
+
+---
+
+## 共通の意味
+
+このクラスでは
+
+* `to[u]` : 頂点 `u` から1回進んだ先
+* `one_step_value[u]` : 遷移 `u -> to[u]` に対応する1ステップ分の寄与
+
+とする。
+
+`prod` は
+**通過した辺列に対応する monoid 積** とする。
+
+演算順序は常に
+
+> 前半の経路を先に通り、その後で後半の経路を通る
+
+という順序で `Monoid::op` を適用する。
+
+つまり path の順に左から右へ畳む。
+
+---
+
+# 1. `jump`
+
+## 宣言
+
+```cpp
+Result jump(int v, long long k) const;
+```
+
+## 意味
+
+頂点 `v` から **ちょうど `k` 回遷移** した結果を返す。
+
+返すものは
+
+* `k` 回後の頂点
+* その `k` 本の辺に対応する monoid 積
+
+である。
+
+## 引数
+
+* `v`
+
+  * 開始頂点
+* `k`
+
+  * 非負整数のステップ数
+
+## 戻り値
+
+```cpp
+Result {
+    .v    = k 回後の行き先,
+    .prod = その k ステップ分の monoid 積
+}
+```
+
+## 仕様
+
+* `k = 0` のとき
+
+  * `v` は変化しない
+  * `prod == Monoid::e()`
+* 実装は通常 `dbl.jump(v, k)` をそのまま使ってよい
+
+## 計算量
+
+```cpp
+O(log k)
+```
+
+厳密には `O(log max_k)`。
+
+---
+
+# 2. `jump_decimal`
+
+## 宣言
+
+```cpp
+Result jump_decimal(int v, std::string_view k) const;
+```
+
+## 意味
+
+頂点 `v` から **10進巨大整数 `k` 回** 遷移した結果を返す。
+
+`k` は `long long` に入らない可能性があるため、
+10進文字列として与えられる。
+
+## 引数
+
+* `v`
+
+  * 開始頂点
+* `k`
+
+  * 非負整数を表す10進文字列
+  * 先頭ゼロを含んでもよいものとして扱ってよい
+
+## 戻り値
+
+```cpp
+Result {
+    .v    = k 回後の行き先,
+    .prod = その k ステップ分の monoid 積
+}
+```
+
+## 仕様
+
+内部では以下の意味で処理する。
+
+### 場合分け
+
+1. `k < fg.dist_to_cycle_of(v)` の場合
+
+   * 全行程が木部分内にある
+   * `k` を `long long` などに落とせる範囲で解釈して `jump(v, small_k)` してよい
+
+2. `k >= fg.dist_to_cycle_of(v)` の場合
+
+   * まず `v` からサイクル入口まで進む
+   * 残りをサイクル上で処理する
+
+### 注意
+
+この関数を **一般モノイドで完全対応するかどうか** は別途設計依存。
+この仕様では、
+
+* 少なくとも「意味としては k ステップの正しい結果を返す」
+* 実装は cycle 部分の monoid 積処理方針に従う
+
+ものとする。
+
+## `k = "0"` のとき
+
+* `v` はそのまま
+* `prod == Monoid::e()`
+
+## 計算量
+
+`k` の桁数を `|k|` として、実装方針に依るが、少なくとも
+
+* 比較・mod 処理に `O(|k|)`
+* 追加処理は小さい
+
+程度を想定。
+
+---
+
+# 3. `kth_next`
+
+## 宣言
+
+```cpp
+int kth_next(int v, long long k) const;
+```
+
+## 意味
+
+頂点 `v` から `k` 回遷移した **行き先の頂点番号のみ** を返す。
+
+## 戻り値
+
+* `k` 回後の頂点
+
+## 仕様
+
+`jump(v, k).v` を返す薄いラッパーでよい。
+
+## `k = 0`
+
+* `v` をそのまま返す
+
+## 計算量
+
+```cpp
+O(log k)
+```
+
+---
+
+# 4. `kth_next_decimal`
+
+## 宣言
+
+```cpp
+int kth_next_decimal(int v, std::string_view k) const;
+```
+
+## 意味
+
+頂点 `v` から 10 進巨大整数 `k` 回遷移した **行き先のみ** を返す。
+
+## 戻り値
+
+* `k` 回後の頂点
+
+## 仕様
+
+`jump_decimal(v, k).v` を返す薄いラッパーでよい。
+
+## `k = "0"`
+
+* `v` をそのまま返す
+
+## 計算量
+
+`jump_decimal` に準ずる。
+
+---
+
+# 5. `path_prod`
+
+## 宣言
+
+```cpp
+T path_prod(int v, long long k) const;
+```
+
+## 意味
+
+頂点 `v` から `k` 回遷移する間の **monoid 積のみ** を返す。
+
+## 戻り値
+
+* その `k` ステップに対応する monoid 積
+
+## 仕様
+
+`jump(v, k).prod` を返す薄いラッパーでよい。
+
+## `k = 0`
+
+* `Monoid::e()` を返す
+
+## 計算量
+
+```cpp
+O(log k)
+```
+
+---
+
+# 6. `path_prod_decimal`
+
+## 宣言
+
+```cpp
+T path_prod_decimal(int v, std::string_view k) const;
+```
+
+## 意味
+
+頂点 `v` から 10 進巨大整数 `k` 回遷移する間の **monoid 積のみ** を返す。
+
+## 戻り値
+
+* その `k` ステップに対応する monoid 積
+
+## 仕様
+
+`jump_decimal(v, k).prod` を返す薄いラッパーでよい。
+
+## `k = "0"`
+
+* `Monoid::e()` を返す
+
+## 計算量
+
+`jump_decimal` に準ずる。
+
+---
+
+# 7. `jump_to_cycle`
+
+## 宣言
+
+```cpp
+Result jump_to_cycle(int v) const;
+```
+
+## 意味
+
+頂点 `v` から、**最初にサイクルへ到達するまで** 進んだ結果を返す。
+
+つまり
+
+* サイクル上にいるならその場
+* 木部分にいるならサイクル入口まで
+
+進む。
+
+## 戻り値
+
+```cpp
+Result {
+    .v    = fg.root_cycle_vertex_of(v),
+    .prod = v からそのサイクル入口に至るまでの monoid 積
+}
+```
+
+## 仕様
+
+* `fg.is_on_cycle(v) == true` のとき
+
+  * 戻り値は
+
+    * `v = v`
+    * `prod = Monoid::e()`
+* それ以外のとき
+
+  * `fg.dist_to_cycle_of(v)` 回 jump した結果を返す
+
+つまり意味としては
+
+```cpp
+jump(v, fg.dist_to_cycle_of(v))
+```
+
+と同じ。
+
+## 計算量
+
+```cpp
+O(log N)
+```
+
+もしくは `jump` の計算量に準ずる。
+
+---
+
+# 8. `first_cycle_vertex`
+
+## 宣言
+
+```cpp
+int first_cycle_vertex(int v) const;
+```
+
+## 意味
+
+頂点 `v` から進み続けたとき、**最初に到達するサイクル上の頂点** を返す。
+
+## 戻り値
+
+* `v` がサイクル上なら `v`
+* 木部分なら流れ込む先の最初のサイクル頂点
+
+## 仕様
+
+`fg.root_cycle_vertex_of(v)` を返す薄いラッパーでよい。
+
+## 計算量
+
+```cpp
+O(1)
+```
+
+---
+
+# 9. `cycle_length_of`
+
+## 宣言
+
+```cpp
+int cycle_length_of(int v) const;
+```
+
+## 意味
+
+頂点 `v` が最終的に属する **サイクルの長さ** を返す。
+
+## 戻り値
+
+* `v` がサイクル上でも木部分でも、
+  最終的に入るサイクルの頂点数
+
+## 仕様
+
+`fg.cycle_length_of(v)` を返す薄いラッパーでよい。
+
+## 計算量
+
+```cpp
+O(1)
+```
+
+---
+
+# 10. `is_on_cycle`
+
+## 宣言
+
+```cpp
+bool is_on_cycle(int v) const;
+```
+
+## 意味
+
+頂点 `v` がサイクル上にあるかどうかを返す。
+
+## 戻り値
+
+* `true` : サイクル上
+* `false`: 木部分
+
+## 仕様
+
+`fg.is_on_cycle(v)` を返す薄いラッパーでよい。
+
+## 計算量
+
+```cpp
+O(1)
+```
+
+---
+
+# 返り値 `Result` の意味
+
+## 宣言
+
+```cpp
+struct Result {
+    int v;
+    T prod;
+};
+```
+
+## 意味
+
+* `v`
+
+  * 遷移後の最終頂点
+* `prod`
+
+  * 通過した辺列に対応する monoid 積
+
+## 重要
+
+`prod` の対象は **辺列** である。
+つまり `k` ステップなら **ちょうど `k` 本の遷移** に対応する値を集約する。
+
+---
+
+# 各関数の関係
+
+以下が成り立つこと。
+
+```cpp
+kth_next(v, k) == jump(v, k).v
+path_prod(v, k) == jump(v, k).prod
+
+kth_next_decimal(v, s) == jump_decimal(v, s).v
+path_prod_decimal(v, s) == jump_decimal(v, s).prod
+
+first_cycle_vertex(v) == fg.root_cycle_vertex_of(v)
+cycle_length_of(v) == fg.cycle_length_of(v)
+is_on_cycle(v) == fg.is_on_cycle(v)
+```
+
+また
+
+```cpp
+jump_to_cycle(v).v == first_cycle_vertex(v)
+```
+
+が常に成り立つ。
+
+---
+
+# 実装上の補足
+
+## `jump`
+
+* `dbl.jump` を呼ぶのが基本
+
+## `jump_to_cycle`
+
+* `jump(v, fg.dist_to_cycle_of(v))` で実装してよい
+
+## `jump_decimal`
+
+* 内部で
+
+  * `k < dist_to_cycle`
+  * `k >= dist_to_cycle`
+    の判定が必要
+* 木部分は `dbl`
+* サイクル部分は `fg` の cycle 情報
+  を使う
+
+---
+
+# そのまま貼れる簡潔版
+
+```cpp
+// v から k 回遷移した最終頂点と、その k ステップ分の monoid 積を返す
+Result jump(int v, long long k) const;
+
+// v から 10 進巨大整数 k 回遷移した最終頂点と、その k ステップ分の monoid 積を返す
+Result jump_decimal(int v, std::string_view k) const;
+
+// v から k 回後の行き先だけを返す
+int kth_next(int v, long long k) const;
+
+// v から 10 進巨大整数 k 回後の行き先だけを返す
+int kth_next_decimal(int v, std::string_view k) const;
+
+// v から k 回遷移する間の monoid 積だけを返す
+T path_prod(int v, long long k) const;
+
+// v から 10 進巨大整数 k 回遷移する間の monoid 積だけを返す
+T path_prod_decimal(int v, std::string_view k) const;
+
+// v から最初にサイクルへ到達するまで進んだ結果を返す
+Result jump_to_cycle(int v) const;
+
+// v から進み続けたとき最初に到達するサイクル頂点を返す
+int first_cycle_vertex(int v) const;
+
+// v が最終的に属するサイクルの長さを返す
+int cycle_length_of(int v) const;
+
+// v がサイクル上にあるかどうかを返す
+bool is_on_cycle(int v) const;
+```
+
+

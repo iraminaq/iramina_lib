@@ -63,38 +63,72 @@ private:
         }
     }
 
-    void dfs_subtree(int v) {
-        sub_l_[v] = v;
-        sub_r_[v] = v + 1;
-        sub_size_[v] = 1;
-
-        if (left_[v] != -1) {
-            dfs_subtree(left_[v]);
-            sub_l_[v] = sub_l_[left_[v]];
-            sub_size_[v] += sub_size_[left_[v]];
+    void dfs_subtree(int start_root) {
+        vector<int> order;
+        order.reserve(n_);
+        vector<int> st;
+        if (start_root != -1) st.push_back(start_root);
+        while(!st.empty()) {
+            int v = st.back();
+            st.pop_back();
+            order.push_back(v);
+            if (left_[v] != -1) st.push_back(left_[v]);
+            if (right_[v] != -1) st.push_back(right_[v]);
         }
-        if (right_[v] != -1) {
-            dfs_subtree(right_[v]);
-            sub_r_[v] = sub_r_[right_[v]];
-            sub_size_[v] += sub_size_[right_[v]];
+        
+        for(int i = n_ - 1; i >= 0; i--) {
+            int v = order[i];
+            sub_l_[v] = v;
+            sub_r_[v] = v + 1;
+            sub_size_[v] = 1;
+            if (left_[v] != -1) {
+                sub_l_[v] = sub_l_[left_[v]];
+                sub_size_[v] += sub_size_[left_[v]];
+            }
+            if (right_[v] != -1) {
+                sub_r_[v] = sub_r_[right_[v]];
+                sub_size_[v] += sub_size_[right_[v]];
+            }
         }
     }
 
-    void dfs_euler(int v, int d) {
-        node_depth_[v] = d;
-        first_[v] = (int)euler_.size();
-        euler_.push_back(v);
-        euler_depth_.push_back(d);
-
-        if (left_[v] != -1) {
-            dfs_euler(left_[v], d + 1);
-            euler_.push_back(v);
-            euler_depth_.push_back(d);
-        }
-        if (right_[v] != -1) {
-            dfs_euler(right_[v], d + 1);
-            euler_.push_back(v);
-            euler_depth_.push_back(d);
+    void dfs_euler(int root) {
+        if (root == -1) return;
+        vector<pair<int, int>> st;
+        st.reserve(n_);
+        st.push_back({root, 0});
+        int d = 0;
+        
+        while(!st.empty()) {
+            auto& [v, state] = st.back();
+            if (state == 0) {
+                node_depth_[v] = d;
+                first_[v] = (int)euler_.size();
+                euler_.push_back(v);
+                euler_depth_.push_back(d);
+                state = 1;
+                if (left_[v] != -1) {
+                    d++;
+                    st.push_back({left_[v], 0});
+                }
+            } else if (state == 1) {
+                if (left_[v] != -1) {
+                    euler_.push_back(v);
+                    euler_depth_.push_back(d);
+                }
+                state = 2;
+                if (right_[v] != -1) {
+                    d++;
+                    st.push_back({right_[v], 0});
+                }
+            } else {
+                if (right_[v] != -1) {
+                    euler_.push_back(v);
+                    euler_depth_.push_back(d);
+                }
+                st.pop_back();
+                d--;
+            }
         }
     }
 
@@ -187,7 +221,7 @@ public:
         euler_.reserve(2 * n_ - 1);
         euler_depth_.reserve(2 * n_ - 1);
 
-        dfs_euler(root_, 0);
+        dfs_euler(root_);
         build_sparse_table();
         has_lca_ = true;
     }
