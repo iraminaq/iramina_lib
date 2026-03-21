@@ -1,0 +1,199 @@
+以下みたいな指示文が使いやすいと思います。
+そのまま実装AIに渡せるように、かなり具体めに書きます。
+
+---
+
+## 指示文案
+
+既存の `ImplicitTreap` 実装を流用して、**利用しやすい軽量版 `SimpleImplicitTreap`** を新たに作成してください。
+目的は、フル汎用版の複雑なテンプレート引数を減らし、競技プログラミングでよく使う形に寄せることです。
+
+### 目的
+
+* 既存の `ImplicitTreap` のロジックはできるだけ流用する
+* ただしインターフェースは簡略化する
+* `T = S` を前提にする
+* lazy は **あり / なしを選べる**
+* reverse も従来どおり使えるようにするが、インターフェースは簡単にしたい
+
+---
+
+## 要件
+
+### 1. 作るもの
+
+* 新しいクラス `SimpleImplicitTreap` を作成する
+* 既存の `ImplicitTreap` 本体のロジックは極力再利用する
+* 既存コードを大きく壊さず、テンプレート部分・traits 部分・薄いラッパ部分を追加 / 整理する方向で実装する
+
+---
+
+### 2. 設計方針
+
+`SimpleImplicitTreap` は **`T = S` 前提** の軽量版とする。
+
+フル版で必要だった以下の分離は不要にする。
+
+* `lift`
+* `mapping_point`
+* `mapping`
+
+代わりに、`SimpleImplicitTreap` では以下のような簡略化された要件にしたい。
+
+#### lazy なし版
+
+必要なのは次だけ:
+
+* `T op(const T&, const T&)`
+* `T e()`
+* `T reverse_prod(const T&)` は必要なら指定、不要なら恒等でよい
+
+#### lazy あり版
+
+必要なのは次だけ:
+
+* `T op(const T&, const T&)`
+* `T e()`
+* `T apply(const F&, const T&, int len)`
+
+  * 点にも区間集約にもこれ1つを使う
+  * 長さ1の要素にも `len=1` で適用する
+* `F composition(const F&, const F&)`
+* `F id()`
+* `T reverse_prod(const T&)` は必要なら指定、不要なら恒等でよい
+
+つまり、フル版の
+
+* `mapping_point(f, x)`
+* `mapping(f, x, len)`
+
+を分けずに、
+**`apply(f, x, len)` に統一する**。
+
+`T = S` なのでこれで十分。
+
+---
+
+### 3. 利用者視点での使いやすさ
+
+利用者はフル版のように大量の関数や型を書かなくてよいようにしたい。
+
+理想的には次のような usage を目指す。
+
+#### lazy なし例
+
+```cpp
+struct Traits {
+    using T = long long;
+    static T op(T a, T b) { return a + b; }
+    static T e() { return 0; }
+};
+using Treap = SimpleImplicitTreap<Traits>;
+```
+
+#### lazy あり例
+
+```cpp
+struct Traits {
+    using T = long long;
+    using F = long long;
+    static constexpr bool use_lazy = true;
+
+    static T op(T a, T b) { return a + b; }
+    static T e() { return 0; }
+
+    static T apply(F f, T x, int len) { return x + f * len; }
+    static F composition(F f, F g) { return f + g; }
+    static F id() { return 0; }
+};
+using Treap = SimpleImplicitTreap<Traits>;
+```
+
+#### reverse が必要な例
+
+```cpp
+static constexpr bool use_reverse = true;
+static T reverse_prod(T x) { return x; }
+```
+
+必要ない場合は書かなくてよいようにしたい。
+
+---
+
+### 4. traits の仕様
+
+`SimpleImplicitTreap<Traits>` 形式にする。
+
+Traits に持たせる想定は以下。
+
+#### 必須
+
+* `using T = ...`
+* `static T op(T, T)`
+* `static T e()`
+
+#### 任意
+
+* `static constexpr bool use_lazy = false`
+
+* `using F = ...` (`use_lazy=true` のときのみ必要)
+
+* `static T apply(F, T, int len)` (`use_lazy=true` のときのみ必要)
+
+* `static F composition(F, F)` (`use_lazy=true` のときのみ必要)
+
+* `static F id()` (`use_lazy=true` のときのみ必要)
+
+* `static constexpr bool use_reverse = false`
+
+* `static T reverse_prod(T)` (`use_reverse=true` のときのみ必要)
+
+---
+
+### 5. 実装上の要望
+
+* `if constexpr` を使って `use_lazy`, `use_reverse` を分岐する
+* `use_lazy=false` のとき、利用者は `F`, `apply`, `composition`, `id` を書かなくてよい
+* `use_reverse=false` のとき、利用者は `reverse_prod` を書かなくてよい
+* 既存の `ImplicitTreap` のノード管理、split / merge / insert / erase / prod / reverse / apply などのロジックはできるだけ流用する
+* 重複実装は最小限にしたい
+* 可能ならフル版との共通内部実装を持たせたい
+
+---
+
+### 6. デフォルト実装
+
+必要なら内部で以下のようなデフォルトを置いてよい。
+
+* reverse 未使用時は `reverse_prod(x) = x`
+* lazy 未使用時は lazy 関連の処理を完全に無効化
+* 実装都合でダミー型 `NoLazy` を使ってもよいが、**利用者には意識させないこと**
+
+---
+
+### 7. 重要な意図
+
+この `SimpleImplicitTreap` は
+**「フル汎用版を置き換えるもの」ではなく、「普段使い用の簡単版」** として作りたい。
+
+重視するのは以下:
+
+* 書く量が少ない
+* contest 中に定義しやすい
+* `T=S` のケースで直感的
+* lazy あり / なしを簡単に切り替えられる
+* 既存フル版の資産は活かす
+
+---
+
+### 8. 実装してほしいもの
+
+以下を出力してください。
+
+1. `SimpleImplicitTreap` の設計
+2. 実装コード
+3. lazy なしの usage 例
+4. lazy ありの usage 例
+5. reverse ありの usage 例
+
+

@@ -1,0 +1,28 @@
+template <class State>
+class Mo {
+public:
+    using answer_type = typename State::answer_type;
+
+public:
+    explicit Mo(int n);
+
+    // 区間 [l, r) のクエリを追加する。
+    void AddQuery(int l, int r);
+
+    // 実行する。
+    // ans.size() は追加済みクエリ数以上であることを要求する。
+    // ans[i] に i 番目に追加したクエリの答えを書き込む。
+    void Run(State& state, std::vector<answer_type>& ans) const;
+};
+
+//State 側の要求仕様
+struct State {
+    using answer_type = ...;
+
+    void AddLeft(int index);
+    void AddRight(int index);
+    void RemoveLeft(int index);
+    void RemoveRight(int index);
+
+    answer_type GetAnswer() const;
+};
