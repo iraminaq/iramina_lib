@@ -1,0 +1,7 @@
+﻿=== Benchmark Random Queries (N=200000, Q=200000) ===
+[ O(1) Update ]
+Mo (Normal)     : 47.67 ms (Moves: 74730861)
+MoSnake         : 45.37 ms (Moves: 74730861)
+MoHilbert       : 50.61 ms (Moves: 78244608)
+MoNoshi91       : 60.35 ms (Moves: 73168697)
+
