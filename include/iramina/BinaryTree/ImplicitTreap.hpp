@@ -145,7 +145,7 @@ private:
 
     static void apply_rev(Node* t) {
         if (!t) return;
-        swap(t->l, t->r);
+        std::swap(t->l, t->r);
         t->prod = reverse_prod(t->prod);
         t->rev ^= 1;
     }
@@ -454,13 +454,57 @@ public:
         root_ = merge_node(a, merge_node(c, merge_node(b, d)));
     }
 
+    void swap_point(int k1, int k2) {
+        assert(0 <= k1 && k1 < size());
+        assert(0 <= k2 && k2 < size());
+        if (k1 == k2) return;
+        swap_ranges(k1, k1 + 1, k2, k2 + 1);
+    }
+
+    T front() {
+        assert(!empty());
+        return get(0);
+    }
+
+    T back() {
+        assert(!empty());
+        return get(size() - 1);
+    }
+
+    void push_back(const T& x) {
+        insert(size(), x);
+    }
+
+    void push_front(const T& x) {
+        insert(0, x);
+    }
+
+    void pop_back() {
+        assert(!empty());
+        erase(size() - 1);
+    }
+
+    void pop_front() {
+        assert(!empty());
+        erase(0);
+    }
+
+    void erase_range(int l, int r) {
+        assert(0 <= l && l <= r && r <= size());
+        if (l == r) return;
+        auto [a, bc] = split_node(root_, l);
+        auto [b, c] = split_node(bc, r - l);
+        release_subtree(b);
+        root_ = merge_node(a, c);
+    }
+
     void swap_ranges(int l1, int r1, int l2, int r2) {
         assert(0 <= l1 && l1 <= r1 && r1 <= size());
         assert(0 <= l2 && l2 <= r2 && r2 <= size());
 
         if (l2 < l1) {
-            swap(l1, l2);
-            swap(r1, r2);
+            std::swap(l1, l2);
+            std::swap(r1, r2);
         }
         assert(r1 <= l2);
 

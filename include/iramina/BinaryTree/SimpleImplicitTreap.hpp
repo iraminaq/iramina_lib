@@ -1,5 +1,5 @@
 #pragma once
-#include "ImplicitTreap.hpp"
+#include "iramina/BinaryTree/ImplicitTreap.hpp"
 #include <type_traits>
 
 template <class Traits>

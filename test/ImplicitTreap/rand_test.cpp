@@ -253,7 +253,7 @@ int main() {
                 continue;
             }
 
-            int op_id = rand_int(0, 11);
+            int op_id = rand_int(0, 19);
 
             switch (op_id) {
                 case 0: { // insert
@@ -371,6 +371,65 @@ int main() {
                 }
                 case 11: { // dump / all_prod の軽確認
                     check_equal(tr, tr, model, "dump/all_prod");
+                    break;
+                }
+                case 12: { // swap
+                    if (n == 0) break;
+                    int k1 = rand_int(0, n - 1);
+                    int k2 = rand_int(0, n - 1);
+                    tr.swap_point(k1, k2);
+                    std::swap(model[k1], model[k2]);
+                    check_equal(tr, tr, model, "swap_point");
+                    break;
+                }
+                case 13: { // front
+                    if (n == 0) break;
+                    long long a = tr.front();
+                    long long b = model.front();
+                    if (a != b) die_mismatch("front", a, b);
+                    break;
+                }
+                case 14: { // back
+                    if (n == 0) break;
+                    long long a = tr.back();
+                    long long b = model.back();
+                    if (a != b) die_mismatch("back", a, b);
+                    break;
+                }
+                case 15: { // push_back
+                    long long x = rand_ll(VAL_L, VAL_R);
+                    tr.push_back(x);
+                    model.push_back(x);
+                    check_equal(tr, tr, model, "push_back");
+                    break;
+                }
+                case 16: { // push_front
+                    long long x = rand_ll(VAL_L, VAL_R);
+                    tr.push_front(x);
+                    model.insert(model.begin(), x);
+                    check_equal(tr, tr, model, "push_front");
+                    break;
+                }
+                case 17: { // pop_back
+                    if (n == 0) break;
+                    tr.pop_back();
+                    model.pop_back();
+                    check_equal(tr, tr, model, "pop_back");
+                    break;
+                }
+                case 18: { // pop_front
+                    if (n == 0) break;
+                    tr.pop_front();
+                    model.erase(model.begin());
+                    check_equal(tr, tr, model, "pop_front");
+                    break;
+                }
+                case 19: { // erase_range
+                    int l = rand_int(0, n);
+                    int r = rand_int(l, n);
+                    tr.erase_range(l, r);
+                    model.erase(model.begin() + l, model.begin() + r);
+                    check_equal(tr, tr, model, "erase_range");
                     break;
                 }
             }

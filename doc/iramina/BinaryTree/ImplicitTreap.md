@@ -61,19 +61,42 @@ void treap.clear()
 - `size`, `empty`: $O(1)$
 - `clear`: $O(n)$
 
-## insert / erase
+## push / pop / front / back
+
+```cpp
+void treap.push_front(const T& x)
+void treap.push_back(const T& x)
+void treap.pop_front()
+void treap.pop_back()
+T treap.front()
+T treap.back()
+```
+
+配列の前後に対する挿入・削除・アクセスを行います。
+
+**制約**
+
+- `pop_front`, `pop_back`, `front`, `back`: 要素が存在すること（空でないこと）
+
+**計算量**
+
+- $O(\log n)$
+
+## insert / erase / erase_range
 
 ```cpp
 void treap.insert(int k, const T& x)
 void treap.erase(int k)
+void treap.erase_range(int l, int r)
 ```
 
-位置 $k$ に要素 $x$ を挿入します。また、位置 $k$ の要素を削除します。
+位置 $k$ に要素 $x$ を挿入します。また、位置 $k$ の要素を削除します。`erase_range` は区間 $[l, r)$ の要素をまとめて削除します。
 
 **制約**
 
 - `insert`: $0 \leq k \leq n$
 - `erase`: $0 \leq k < n$
+- `erase_range`: $0 \leq l \leq r \leq n$
 
 **計算量**
 
@@ -162,20 +185,23 @@ void treap.merge(ImplicitTreap& other)
 
 - $O(\log n)$
 
-## rotate / swap_ranges
+## rotate / swap_ranges / swap_point
 
 ```cpp
 void treap.rotate(int l, int m, int r)
 void treap.swap_ranges(int l1, int r1, int l2, int r2)
+void treap.swap_point(int k1, int k2)
 ```
 
 - `rotate`: 区間 $[l, m)$ と区間 $[m, r)$ を入れ替えます。
 - `swap_ranges`: 区間 $[l1, r1)$ と区間 $[l2, r2)$ （互いに重ならないこと）の位置を入れ替えます。
+- `swap_point`: 位置 $k1$ と $k2$ の要素を入れ替えます。
 
 **制約**
 
 - `rotate`: $0 \leq l \leq m \leq r \leq n$
 - `swap_ranges`: 各区間は適正で互いに素であること。
+- `swap_point`: $0 \leq k1, k2 < n$
 
 **計算量**
 

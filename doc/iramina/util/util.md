@@ -153,3 +153,40 @@ template<class T, class S> std::pair<T, S> operator/(const std::pair<T,S>& a, co
 **計算量**
 
 - $O(1)$
+
+## ビット操作関数 (bit_test / bit_set / 等)
+
+```cpp
+template <class T> constexpr bool bit_test(T x, int k)
+template <class T> constexpr void bit_set(T& x, int k)
+template <class T> constexpr void bit_reset(T& x, int k)
+template <class T> constexpr void bit_flip(T& x, int k)
+template <class T> constexpr void bit_assign(T& x, int k, bool v)
+template <class T> constexpr bool bit_any(T x, int mask)
+template <class T> constexpr int bit_popcount(T x)
+```
+
+整数のビット操作を直感的に記述できるユーティリティ群です。
+（全て `constexpr` に対応しており、コンパイル時評価が可能です。）
+
+**計算量**
+
+- $O(1)$
+
+## ソート補助関数 (keySort / secondSort / ascDescSort)
+
+```cpp
+template <class T, class S> void keySort(vector<T>&A, vector<S>&key)
+template<class T, class S> void secondSort(vector<pair<T, S>>&A)
+template<class T, class S> void ascDescSort(vector<pair<T, S>>&A)
+```
+
+頻出のソート処理を簡潔に書くためのユーティリティ群です。
+
+- `keySort`: `key` 配列の値を基準にして、配列 `A` と `key` の両方を同時にソートします。
+- `secondSort`: `std::pair` の第二要素（`second`）を基準に昇順ソートします。
+- `ascDescSort`: `std::pair` の第一要素（`first`）で昇順ソートし、同一値のものは第二要素（`second`）を降順ソートします。
+
+**計算量**
+
+- $O(n \log n)$
