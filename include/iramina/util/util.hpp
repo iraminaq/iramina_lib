@@ -2,6 +2,8 @@
 
 #include <cassert>
 #include <utility>
+#include <vector>
+#include <algorithm>
 
 inline __int128 powI64(long long x, long long n){
     __int128 ret = 1;
@@ -153,14 +155,15 @@ constexpr int bit_popcount(T x) {
 }
 
 template <class T, class S>
-void keySort(vector<T>&A, vector<S>&key){
+void keySort(std::vector<T>&A, std::vector<S>&key){
     int N = A.size();
-    vector<pair<S, T>> C;
+    std::vector<std::pair<S, T>> C;
+    C.reserve(N);
     for (int i = 0; i < N; i++) {
         C.push_back({key[i], A[i]});
     }
 
-    sort(C.begin(), C.end());
+    std::sort(C.begin(), C.end());
 
     for (int i = 0; i < N; i++) {
         key[i] = C[i].first;
@@ -169,22 +172,22 @@ void keySort(vector<T>&A, vector<S>&key){
 }
 
 template<class T, class S>
-void secondSort(vector<pair<T, S>>&A){
+void secondSort(std::vector<std::pair<T, S>>&A){
     struct Cmp {
-        bool operator()(const pair<T, S>& a, const pair<T, S>& b) const {
+        bool operator()(const std::pair<T, S>& a, const std::pair<T, S>& b) const {
             return a.second < b.second;
         }
     };
-    sort(A.begin(), A.end(), Cmp());
+    std::sort(A.begin(), A.end(), Cmp());
 }
 
 template<class T, class S>
-void ascDescSort(vector<pair<T, S>>&A){
+void ascDescSort(std::vector<std::pair<T, S>>&A){
     struct Cmp {
-        bool operator()(const pair<T, S>& a, const pair<T, S>& b) const {
+        bool operator()(const std::pair<T, S>& a, const std::pair<T, S>& b) const {
             if (a.first != b.first) return a.first < b.first;
             return a.second > b.second;
         }
     };
-    sort(A.begin(), A.end(), Cmp());
+    std::sort(A.begin(), A.end(), Cmp());
 }
