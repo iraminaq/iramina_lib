@@ -6,7 +6,7 @@ echo     GitHub SSH Auto Push Script
 echo ==========================================
 echo.
 
-:: コマンドライン引数があればそれをメッセージにする。なければデフォルト。
+rem If there is a command line argument, use it as the commit message. Otherwise, use the default.
 set MSG=%*
 if "%MSG%"=="" set MSG=Add MoRollback, DynamicMo and documentations
 
